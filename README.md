@@ -10,8 +10,8 @@ Integration for Homeassistant to view and Control the Clage Homeserver for elect
 - change the water temperature of the heater
 - no cloud connection needed to control the heater - only local ip-access needed.
 
-# Warning: WIP - Breaking changes possible
-This is the first version of the Integration so there are still breaking changes possible.
+# Warning: WIP - Work in progress
+This is an early test version of the Integration; it does not work yet!
 
 # Installation
 
