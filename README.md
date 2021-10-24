@@ -36,5 +36,5 @@ clage_homeserver:
     - name: <ip of your heater>
 ```
 
-# Sample View
-![screenshot of Home Assistant](doc/ha_entity_view.png)
+<!-- # Sample View
+![screenshot of Home Assistant](doc/ha_entity_view.png) -->
