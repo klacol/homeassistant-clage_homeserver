@@ -1,0 +1,5 @@
+DOMAIN = "clage_homeserver"
+CONF_NAME = "name"
+CONF_SERIAL = "serial"
+CONF_CHARGERS = "chargers"
+CHARGER_API = "charger_api"

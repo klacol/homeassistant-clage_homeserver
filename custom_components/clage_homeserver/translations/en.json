@@ -1,0 +1,18 @@
+{
+    "config": {
+        "title": "Add Clage Homeserver",
+        "step": {
+            "user": {
+                "title": "Clage Homeserver Setup",
+			"description": "If you need help with the configuration have a look here: https://github.com/klacol/homeassistant-clage_homeserver",
+                "data": {
+                    "host": "Hostname or IP-Address of the Homeserver in the local network",
+                    "name_homeserver": "unique name of the Homeserver",
+                    "name_heater": "unique name of the heater, that is connected to the Homeserver"
+                }
+            }
+        },
+        "abort": {
+        }
+    }
+}
