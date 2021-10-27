@@ -6,7 +6,14 @@ from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.const import CONF_HOST, CONF_SCAN_INTERVAL
 
-from .const import DOMAIN, CONF_NAME
+from .const import (
+    DOMAIN,
+    CONF_HOMESERVER_IP_ADDRESS,
+    CONF_HOMESERVER_ID,
+    CONF_HEATER_ID,
+    CONF_NAME,
+)
+
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -16,6 +23,7 @@ MIN_UPDATE_INTERVAL = timedelta(seconds=10)
 
 class ConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Config flow for clage_homeserver setup."""
+
     VERSION = 1
 
     @staticmethod
@@ -29,7 +37,8 @@ class ConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             return self.async_create_entry(title=info[CONF_NAME], data=info)
 
         return self.async_show_form(
-            step_id="user", data_schema=vol.Schema(
+            step_id="user",
+            data_schema=vol.Schema(
                 {
                     vol.Required(CONF_HOMESERVER_IP_ADDRESS): str,
                     vol.Required(CONF_HOMESERVER_ID): str,
