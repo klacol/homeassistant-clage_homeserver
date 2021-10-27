@@ -26,10 +26,6 @@ _LOGGER = logging.getLogger(__name__)
 
 _sensorUnits = {
     'charger_temp': {'unit': TEMP_CELSIUS, 'name': 'Charger Temp'},
-    'charger_temp0': {'unit': TEMP_CELSIUS, 'name': 'Charger Temp 0'},
-    'charger_temp1': {'unit': TEMP_CELSIUS, 'name': 'Charger Temp 1'},
-    'charger_temp2': {'unit': TEMP_CELSIUS, 'name': 'Charger Temp 2'},
-    'charger_temp3': {'unit': TEMP_CELSIUS, 'name': 'Charger Temp 3'},
     'p_l1': {'unit': POWER_KILO_WATT, 'name': 'Power L1'},
     'p_l2': {'unit': POWER_KILO_WATT, 'name': 'Power L2'},
     'p_l3': {'unit': POWER_KILO_WATT, 'name': 'Power L3'},
@@ -83,10 +79,6 @@ _sensors = [
     'post_contactor_l2',
     'post_contactor_l3',
     'charger_temp',
-    'charger_temp0',
-    'charger_temp1',
-    'charger_temp2',
-    'charger_temp3',
     'current_session_charged_energy',
     'charge_limit',
     'adapter',
@@ -152,7 +144,7 @@ async def async_setup_entry(
     homeserverName = config[CONF_NAME]
 
     _LOGGER.debug(f"charger name: '{homeserverName}'")
-    async_add_entities(_create_sensors_for_charger(homeserverName, hass))
+    async_add_entities(_create_sensors_for_homerserver(homeserverName, hass))
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
@@ -166,8 +158,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     entities = []
     for homeserver in homeservers:
         homeserverName = homeserver[0][CONF_NAME]
-        _LOGGER.debug(f"homeserver name: '{homeserverName}'")
-        entities.extend(_create_sensors_for_homeserver(homeserverName, hass))
+        _LOGGER.debug(f"homeserver id: '{homeserverId}'")
+        entities.extend(_create_sensors_for_homeserver(homeserverId, hass))
 
     async_add_entities(entities)
 

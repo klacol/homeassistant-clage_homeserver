@@ -31,11 +31,9 @@ class ConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="user", data_schema=vol.Schema(
                 {
-                    vol.Required(CONF_HOST): str,
-                    vol.Required(CONF_NAME): str,
-                    vol.Optional(
-                        CONF_SCAN_INTERVAL, default=20
-                    ): int
+                    vol.Required(CONF_HOMESERVER_IP_ADDRESS): str,
+                    vol.Required(CONF_HOMESERVER_ID): str,
+                    vol.Required(CONF_HEATER_ID): str,
                 }
             ),
         )

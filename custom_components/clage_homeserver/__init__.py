@@ -15,12 +15,8 @@ from clage_homeserver import ClageHomeServer
 
 _LOGGER = logging.getLogger(__name__)
 
-ABSOLUTE_MAX_CURRENT = "charger_absolute_max_current"
-SET_CABLE_LOCK_MODE_ATTR = "cable_lock_mode"
-SET_ABSOLUTE_MAX_CURRENT_ATTR = "charger_absolute_max_current"
-CHARGE_LIMIT = "charge_limit"
-SET_MAX_CURRENT_ATTR = "max_current"
-CHARGER_NAME_ATTR = "charger_name"
+TEMPERATURE = "heater_temperature"
+HEATER_ID_ATTR = "heater id"
 
 MIN_UPDATE_INTERVAL = timedelta(seconds=10)
 DEFAULT_UPDATE_INTERVAL = timedelta(seconds=20)
@@ -54,22 +50,19 @@ async def async_setup_entry(hass, config):
     _LOGGER.debug(repr(config.data))
 
     name = config.data[CONF_NAME]
-    charger = GoeCharger(config.data[CONF_HOST])
-    hass.data[DOMAIN]["api"][name] = charger
+    clageHomeServer = ClageHomeServer(config.data[CONF_HOMESERVER_IP_ADDRESS],config.data[CONF_HOMESERVER_ID],config.data[CONF_HEATER_ID])
+    hass.data[DOMAIN]["api"][name] = clageHomeServer
 
     await hass.data[DOMAIN]["coordinator"].async_refresh()
 
     hass.async_create_task(
         hass.config_entries.async_forward_entry_setup(config, "sensor")
     )
-    hass.async_create_task(
-        hass.config_entries.async_forward_entry_setup(config, "switch")
-    )
     return True
 
 
 async def async_unload_entry(hass, entry):
-    _LOGGER.debug(f"Unloading charger '{entry.data[CONF_NAME]}")
+    _LOGGER.debug(f"Unloading homeserver '{entry.data[CONF_NAME]}")
     hass.data[DOMAIN]["api"].pop(entry.data[CONF_NAME])
     return True
 
@@ -80,50 +73,52 @@ class ChargerStateFetcher:
 
     async def fetch_states(self):
         _LOGGER.debug('Updating status...')
-        goeChargers = self._hass.data[DOMAIN]["api"]
+        homeservers = self._hass.data[DOMAIN]["api"]
         data = self.coordinator.data if self.coordinator.data else {}
-        for chargerName in goeChargers.keys():
-            _LOGGER.debug(f"update for '{chargerName}'..")
-            fetchedStatus = await self._hass.async_add_executor_job(goeChargers[chargerName].requestStatus)
+        for homeserverId in homeservers.keys():
+            _LOGGER.debug(f"update for '{homeserverId}'..")
+            fetchedStatus = await self._hass.async_add_executor_job(homeservers[homeserverId].requestStatus)
             if fetchedStatus.get("car_status", "unknown") != "unknown":
-                data[chargerName] = fetchedStatus
+                data[homeserverId] = fetchedStatus
             else:
-                _LOGGER.error(f"Unable to fetch state for Charger {chargerName}")
+                _LOGGER.error(f"Unable to fetch state for Charger {homeserverId}")
         return data
 
 
 async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
-    """Set up go-eCharger platforms and services."""
+    """Set up clage_homeserver platforms and services."""
 
     _LOGGER.debug("async_setup")
     scan_interval = DEFAULT_UPDATE_INTERVAL
 
     hass.data[DOMAIN] = {}
     chargerApi = {}
-    chargers = []
+    homeservers = []
     if DOMAIN in config:
         scan_interval = config[DOMAIN].get(CONF_SCAN_INTERVAL, DEFAULT_UPDATE_INTERVAL)
 
-        host = config[DOMAIN].get(CONF_HOST, False)
-        serial = config[DOMAIN].get(CONF_SERIAL, "unknown")
+        ipAddress = config[DOMAIN].get(CONF_HOMESERVER_IP_ADDRESS, False)
+        homeserverId = config[DOMAIN].get(CONF_HOMESERVER_ID, "unknown")
+        heaterId = config[DOMAIN].get(CONF_HEATER_ID, "unknown")
 
-        chargers = config[DOMAIN].get(CONF_CHARGERS, [])
+        clageHomeServer = ClageHomeServer(ipAddress,homeserverId,heaterId) 
 
-        if host:
-            if not serial:
-                goeCharger = GoeCharger(host)
-                status = goeCharger.requestStatus()
+        if ipAddress:
+            if not ipAddress:
+                clageHomeServer = ClageHomeServer(host)
+                status = clageHomeServer.requestStatus()
                 serial = status["serial_number"]
-            chargers.append([{CONF_NAME: serial, CONF_HOST: host}])
-        _LOGGER.debug(repr(chargers))
+            homeservers.append([{CONF_NAME: serial, CONF_HOST: host}])
+        _LOGGER.debug(repr(homeservers))
 
-        for charger in chargers:
-            chargerName = charger[0][CONF_NAME]
-            host = charger[0][CONF_HOST]
-            _LOGGER.debug(f"charger: '{chargerName}' host: '{host}' ")
+        for homeserver in homeservers:
+            ipAddress = homeserver[0][CONF_HOMESERVER_IP_ADDRESS]
+            homeserverId = homeserver[0][CONF_HOMESERVER_ID]
+            heaterId = homeserver[0][CONF_HEATER_ID]
+            _LOGGER.debug(f"ipAddress: '{ipAddress}' homeserverId: '{homeserverId}' heaterId: '{heaterId}'")
 
-            goeCharger = GoeCharger(host)
-            chargerApi[chargerName] = goeCharger
+            clageHomeServer = ClageHomeServer(ipAddress,homeserverId,heaterId)
+            chargerApi[homeserverId] = clageHomeServer
 
     hass.data[DOMAIN]["api"] = chargerApi
 
@@ -142,187 +137,53 @@ async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
 
     await coordinator.async_refresh()
 
-    async def async_handle_set_max_current(call):
-        """Handle the service call to set the absolute max current."""
-        chargerNameInput = call.data.get(CHARGER_NAME_ATTR, '')
+    async def async_handle_set_temperature(call):
+        """Handle the service call to set the temperature of the heater."""
+        heaterIdInput = call.data.get(HEATER_ID_ATTR, '')
 
-        maxCurrentInput = call.data.get(
-            SET_MAX_CURRENT_ATTR, 32  # TODO: dynamic based on chargers absolute_max-setting
+        temperatureInput = call.data.get(
+            SET_TEMPERATURE, 32  # TODO: dynamic based on chargers absolute_max-setting
         )
-        maxCurrent = 0
-        if isinstance(maxCurrentInput, str):
-            if maxCurrentInput.isnumeric():
-                maxCurrent = int(maxCurrentInput)
-            elif valid_entity_id(maxCurrentInput):
-                maxCurrent = int(hass.states.get(maxCurrentInput).state)
+        temperature = 0
+        if isinstance(temperatureInput, str):
+            if temperatureInput.isnumeric():
+                temperature = int(temperatureInput)
+            elif valid_entity_id(temperatureInput):
+                temperature = int(hass.states.get(temperatureInput).state)
             else:
                 _LOGGER.error(
-                    "No valid value for '%s': %s", SET_MAX_CURRENT_ATTR, maxCurrent
+                    "No valid value for '%s': %s", SET_TEMPERATURE, temperature
                 )
                 return
         else:
-            maxCurrent = maxCurrentInput
+            temperature = temperatureInput
 
-        if maxCurrent < 6:
-            maxCurrent = 6
-        if maxCurrent > 32:
-            maxCurrent = 32
+        if temperature < 10:
+            temperature = 10
+        if temperature > 60:
+            temperature = 60
 
-        if len(chargerNameInput) > 0:
-            _LOGGER.debug(f"set max_current for charger '{chargerNameInput}' to {maxCurrent}")
+        if len(homeserverIdInput) > 0:
+            _LOGGER.debug(f"set max_current for charger '{homeserverIdInput}' to {temperature}")
             try:
-                await hass.async_add_executor_job(hass.data[DOMAIN]["api"][chargerNameInput].setMaxCurrent, maxCurrent)
+                await hass.async_add_executor_job(hass.data[DOMAIN]["api"][homeserverIdInput].setTemperature, temperature)
             except KeyError:
-                _LOGGER.error(f"Charger with name '{chargerName}' not found!")
+                _LOGGER.error(f"Charger with name '{homeserverIdInput}' not found!")
 
         else:
             for charger in hass.data[DOMAIN]["api"].keys():
                 try:
-                    _LOGGER.debug(f"set max_current for charger '{charger}' to {maxCurrent}")
-                    await hass.async_add_executor_job(hass.data[DOMAIN]["api"][charger].setMaxCurrent, maxCurrent)
+                    _LOGGER.debug(f"set_temperature for heater '{charger}' to {temperature}")
+                    await hass.async_add_executor_job(hass.data[DOMAIN]["api"][charger].setTemperature, temperature)
                 except KeyError:
                     _LOGGER.error(f"Charger with name '{chargerName}' not found!")
 
         await hass.data[DOMAIN]["coordinator"].async_refresh()
 
-    async def async_handle_set_absolute_max_current(call):
-        """Handle the service call to set the absolute max current."""
-        chargerNameInput = call.data.get(CHARGER_NAME_ATTR, '')
-        absoluteMaxCurrentInput = call.data.get(SET_ABSOLUTE_MAX_CURRENT_ATTR, 16)
-        if isinstance(absoluteMaxCurrentInput, str):
-            if absoluteMaxCurrentInput.isnumeric():
-                absoluteMaxCurrent = int(absoluteMaxCurrentInput)
-            elif valid_entity_id(absoluteMaxCurrentInput):
-                absoluteMaxCurrent = int(hass.states.get(absoluteMaxCurrentInput).state)
-            else:
-                _LOGGER.error(
-                    "No valid value for '%s': %s",
-                    SET_ABSOLUTE_MAX_CURRENT_ATTR,
-                    absoluteMaxCurrentInput,
-                )
-                return
-        else:
-            absoluteMaxCurrent = absoluteMaxCurrentInput
-
-        if absoluteMaxCurrent < 6:
-            absoluteMaxCurrent = 6
-        if absoluteMaxCurrent > 32:
-            absoluteMaxCurrent = 32
-
-        if len(chargerNameInput) > 0:
-            _LOGGER.debug(f"set absolute_max_current for charger '{chargerNameInput}' to {absoluteMaxCurrent}")
-            try:
-                await hass.async_add_executor_job(
-                    hass.data[DOMAIN]["api"][chargerNameInput].setAbsoluteMaxCurrent, absoluteMaxCurrent
-                )
-            except KeyError:
-                _LOGGER.error(f"Charger with name '{chargerName}' not found!")
-
-        else:
-            for charger in hass.data[DOMAIN]["api"].keys():
-                try:
-                    _LOGGER.debug(f"set absolute_max_current for charger '{charger}' to {absoluteMaxCurrent}")
-                    await hass.async_add_executor_job(
-                        hass.data[DOMAIN]["api"][charger].setAbsoluteMaxCurrent, absoluteMaxCurrent
-                    )
-                except KeyError:
-                    _LOGGER.error(f"Charger with name '{chargerName}' not found!")
-
-        await hass.data[DOMAIN]["coordinator"].async_refresh()
-
-    async def async_handle_set_cable_lock_mode(call):
-        """Handle the service call to set the absolute max current."""
-        chargerNameInput = call.data.get(CHARGER_NAME_ATTR, '')
-        cableLockModeInput = call.data.get(SET_CABLE_LOCK_MODE_ATTR, 0)
-        if isinstance(cableLockModeInput, str):
-            if cableLockModeInput.isnumeric():
-                cableLockMode = int(cableLockModeInput)
-            elif valid_entity_id(cableLockModeInput):
-                cableLockMode = int(hass.states.get(cableLockModeInput).state)
-            else:
-                _LOGGER.error(
-                    "No valid value for '%s': %s",
-                    SET_CABLE_LOCK_MODE_ATTR,
-                    cableLockModeInput,
-                )
-                return
-        else:
-            cableLockMode = cableLockModeInput
-
-        cableLockModeEnum = GoeCharger.CableLockMode.UNLOCKCARFIRST
-        if cableLockModeInput == 1:
-            cableLockModeEnum = GoeCharger.CableLockMode.AUTOMATIC
-        if cableLockMode >= 2:
-            cableLockModeEnum = GoeCharger.CableLockMode.LOCKED
-
-        if len(chargerNameInput) > 0:
-            _LOGGER.debug(f"set set_cable_lock_mode for charger '{chargerNameInput}' to {cableLockModeEnum}")
-            try:
-                await hass.async_add_executor_job(
-                    hass.data[DOMAIN]["api"][chargerNameInput].setCableLockMode, cableLockModeEnum
-                )
-            except KeyError:
-                _LOGGER.error(f"Charger with name '{chargerName}' not found!")
-
-        else:
-            for charger in hass.data[DOMAIN]["api"].keys():
-                try:
-                    _LOGGER.debug(f"set set_cable_lock_mode for charger '{charger}' to {cableLockModeEnum}")
-                    await hass.async_add_executor_job(hass.data[DOMAIN]["api"][charger].setCableLockMode, cableLockModeEnum)
-                except KeyError:
-                    _LOGGER.error(f"Charger with name '{chargerName}' not found!")
-
-        await hass.data[DOMAIN]["coordinator"].async_refresh()
-
-    async def async_handle_set_charge_limit(call):
-        """Handle the service call to set charge limit."""
-        chargerNameInput = call.data.get(CHARGER_NAME_ATTR, '')
-        chargeLimitInput = call.data.get(CHARGE_LIMIT, 0.0)
-        if isinstance(chargeLimitInput, str):
-            if chargeLimitInput.isnumeric():
-                chargeLimit = float(chargeLimitInput)
-            elif valid_entity_id(chargeLimitInput):
-                chargeLimit = float(hass.states.get(chargeLimitInput).state)
-            else:
-                _LOGGER.error(
-                    "No valid value for '%s': %s", CHARGE_LIMIT, chargeLimitInput
-                )
-                return
-        else:
-            chargeLimit = chargeLimitInput
-
-        if chargeLimit < 0:
-            chargeLimit = 0
-
-        if len(chargerNameInput) > 0:
-            _LOGGER.debug(f"set set_charge_limit for charger '{chargerNameInput}' to {chargeLimit}")
-            try:
-                await hass.async_add_executor_job(hass.data[DOMAIN]["api"][chargerNameInput].setChargeLimit, chargeLimit)
-            except KeyError:
-                _LOGGER.error(f"Charger with name '{chargerName}' not found!")
-
-        else:
-            for charger in hass.data[DOMAIN]["api"].keys():
-                try:
-                    _LOGGER.debug(f"set set_charge_limit for charger '{charger}' to {chargeLimit}")
-                    await hass.async_add_executor_job(hass.data[DOMAIN]["api"][charger].setChargeLimit, chargeLimit)
-                except KeyError:
-                    _LOGGER.error(f"Charger with name '{chargerName}' not found!")
-
-        await hass.data[DOMAIN]["coordinator"].async_refresh()
-
-    hass.services.async_register(DOMAIN, "set_max_current", async_handle_set_max_current)
-    hass.services.async_register(
-        DOMAIN, "set_absolute_max_current", async_handle_set_absolute_max_current
-    )
-    hass.services.async_register(DOMAIN, "set_cable_lock_mode", async_handle_set_cable_lock_mode)
-    hass.services.async_register(DOMAIN, "set_charge_limit", async_handle_set_charge_limit)
+    hass.services.async_register(DOMAIN, "set_temperature", async_handle_set_temperature)
 
     hass.async_create_task(async_load_platform(
         hass, "sensor", DOMAIN, {CONF_CHARGERS: chargers, CHARGER_API: chargerApi}, config)
-    )
-    hass.async_create_task(async_load_platform(
-        hass, "switch", DOMAIN, {CONF_CHARGERS: chargers, CHARGER_API: chargerApi}, config)
     )
 
     return True

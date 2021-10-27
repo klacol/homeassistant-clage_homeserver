@@ -8,6 +8,6 @@
   "config_flow": true,
   "dependencies": [],
   "codeowners": ["@klacol"],
-  "requirements": ["clage_homeserver==0.0.1"]
+  "requirements": ["clage-homeserver==0.0.7"]
 }
 
