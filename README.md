@@ -30,10 +30,9 @@ git clone https://github.com/klacol/homeassistant-clage_homeserver.git
 
 ```yaml
 clage_homeserver:
-  host: <ip of your homeserver>
-  name: <id of your homeserver>
-  heater:
-    - name: <ip of your heater>
+  ipAddress: <ip of your homeserver>
+  homeserverId: <id of your homeserver>
+  heaterId: <id of your heater>
 ```
 
 <!-- # Sample View
