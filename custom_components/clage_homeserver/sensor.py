@@ -14,8 +14,6 @@ from homeassistant import core, config_entries
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.components.sensor import (
     STATE_CLASS_MEASUREMENT,
-    STATE_CLASS_TOTAL_INCREASING,
-    DEVICE_CLASS_ENERGY,
     SensorEntity,
 )
 
@@ -199,7 +197,7 @@ _sensors = {
         "stateclass": STATE_CLASS_MEASUREMENT,
         "deviceclass": "",
     },
-    "heater_status_powermax": {
+    "heater_status_powerMax": {
         "unit": POWER_KILO_WATT,
         "name": "Leistungsaufnahme max.",
         "description": "Höchstwert der Leistungsaufnahme des Durchlauferhitzers",
@@ -226,7 +224,7 @@ _sensors = {
 def _create_sensors_for_homeserver(homeserverName, hass):
     entities = []
     for sensor in _sensors:
-        _LOGGER.debug(f"Adding Sensor: {sensor} for homeserver {homeserverName}")
+        _LOGGER.debug("Adding Sensor: %s for homeserver %s", {sensor}, {homeserverName})
         entities.append(
             ClageHomeserverSensor(
                 hass.data[DOMAIN]["coordinator"],
@@ -247,13 +245,13 @@ async def async_setup_entry(
     config_entry: config_entries.ConfigEntry,
     async_add_entities,
 ):
-    _LOGGER.debug("setup sensors...")
+    _LOGGER.debug("Setup sensors")
     config = config_entry.as_dict()["data"]
 
-    homeserverName = config[CONF_NAME]
+    homeserver_name = config[CONF_NAME]
 
-    _LOGGER.debug(f"homeserver name: '{homeserverName}'")
-    async_add_entities(_create_sensors_for_homeserver(homeserverName, hass))
+    _LOGGER.debug("homeserver name: %s", {homeserver_name})
+    async_add_entities(_create_sensors_for_homeserver(homeserver_name, hass))
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
@@ -266,14 +264,16 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     entities = []
     for homeserver in homeservers:
-        homeserverName = homeserver[0][CONF_NAME]
-        _LOGGER.debug(f"homeserver name: '{homeserverName}'")
-        entities.extend(_create_sensors_for_homeserver(homeserverName, hass))
+        homeserver_name = homeserver[0][CONF_NAME]
+        _LOGGER.debug("homeserver name: %s", {homeserver_name})
+        entities.extend(_create_sensors_for_homeserver(homeserver_name, hass))
 
     async_add_entities(entities)
 
 
 class ClageHomeserverSensor(CoordinatorEntity, SensorEntity):
+    """Management of all sensors of the CLAGE Homeserver."""
+
     def __init__(
         self,
         coordinator,
@@ -285,7 +285,7 @@ class ClageHomeserverSensor(CoordinatorEntity, SensorEntity):
         stateClass,
         deviceClass,
     ):
-        """Initialize the clage homeserver sensor."""
+        """Initializes the clage homeserver sensors."""
 
         super().__init__(coordinator)
         self.homeservername = homeserverName

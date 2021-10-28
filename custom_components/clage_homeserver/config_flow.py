@@ -1,10 +1,10 @@
+"""Module for management the configuration while the setup of the integration"""
 import logging
 from datetime import timedelta
 import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.core import callback
-from homeassistant.const import CONF_HOST, CONF_SCAN_INTERVAL
 
 from .const import (
     DOMAIN,
@@ -28,10 +28,12 @@ class ConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
     @staticmethod
     @callback
-    async def async_get_options_flow(config_entry):
+    def async_get_options_flow(config_entry):
+        """Red the options from the configuration.yaml"""
         return OptionsFlowHandler(config_entry)
 
-    async def async_step_user(self, info):
+    def async_step_user(self, info):
+        """"""
         if info is not None:
             _LOGGER.debug(info)
             return self.async_create_entry(title=info[CONF_NAME], data=info)
