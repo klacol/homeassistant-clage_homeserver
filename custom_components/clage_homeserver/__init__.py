@@ -44,6 +44,10 @@ CONFIG_SCHEMA = vol.Schema(
                                     vol.Required(CONF_HOMESERVER_IP_ADDRESS): vol.All(
                                         ipaddress.ip_address, cv.string
                                     ),
+                                    vol.Required(CONF_HOMESERVER_ID): vol.All(
+                                        cv.string
+                                    ),
+                                    vol.Required(CONF_HEATER_ID): vol.All(cv.string),
                                 }
                             )
                         ],
@@ -99,10 +103,12 @@ class HomeserverStateFetcher:
         data = self.coordinator.data if self.coordinator.data else {}
         for homeserverId in homeservers.keys():
             _LOGGER.debug(f"update for '{homeserverId}'..")
+            homeserver = homeservers[homeserverId]
             fetchedStatus = await self._hass.async_add_executor_job(
-                homeservers[homeserverId].requestStatus
+                homeserver.requestStatus
             )
-            if fetchedStatus.get("homeserver_status", "unknown") != "unknown":
+            requestStatus = fetchedStatus.get("homeserver_success", False)
+            if requestStatus == True:
                 data[homeserverId] = fetchedStatus
             else:
                 _LOGGER.error(f"Unable to fetch state for Homeserver {homeserverId}")
@@ -121,32 +127,18 @@ async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
     if DOMAIN in config:
         scan_interval = config[DOMAIN].get(CONF_SCAN_INTERVAL, DEFAULT_UPDATE_INTERVAL)
 
-        ipAddress = config[DOMAIN].get(CONF_HOMESERVER_IP_ADDRESS, False)
-        homeserverId = config[DOMAIN].get(CONF_HOMESERVER_ID, "unknown")
-        heaterId = config[DOMAIN].get(CONF_HEATER_ID, "unknown")
-
-        clageHomeServer = ClageHomeServer(ipAddress, homeserverId, heaterId)
-
-        if ipAddress:
-            if not ipAddress:
-                clageHomeServer = ClageHomeServer(ipAddress, homeserverId, heaterId)
-                status = clageHomeServer.requestStatus()
-                serial = status["serial_number"]
-            homeservers.append(
-                [{CONF_NAME: serial, CONF_HOMESERVER_IP_ADDRESS: ipAddress}]
-            )
-        _LOGGER.debug(repr(homeservers))
+        homeservers = config[DOMAIN].get(CONF_HOMESERVERS, [])
 
         for homeserver in homeservers:
+            homeserverName = homeserver[0][CONF_NAME]
             ipAddress = homeserver[0][CONF_HOMESERVER_IP_ADDRESS]
             homeserverId = homeserver[0][CONF_HOMESERVER_ID]
             heaterId = homeserver[0][CONF_HEATER_ID]
             _LOGGER.debug(
                 f"ipAddress: '{ipAddress}' homeserverId: '{homeserverId}' heaterId: '{heaterId}'"
             )
-
             clageHomeServer = ClageHomeServer(ipAddress, homeserverId, heaterId)
-            homeserverApi[homeserverId] = clageHomeServer
+            homeserverApi[homeserverName] = clageHomeServer
 
     hass.data[DOMAIN]["api"] = homeserverApi
 

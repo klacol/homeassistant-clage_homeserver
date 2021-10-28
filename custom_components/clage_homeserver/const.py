@@ -8,7 +8,7 @@ PLATFORMS = ["sensor"]
 
 CONF_NAME = "name"
 CONF_HOMESERVERS = "homeservers"
-CONF_HOMESERVER_IP_ADDRESS = "xxx.xxx.xxx.xxx"
-CONF_HOMESERVER_ID = "F8F00..."
-CONF_HEATER_ID = "2049D..."
-HOMESERVER_API = "homeserver_api"
+CONF_HOMESERVER_IP_ADDRESS = "ipAddress"
+CONF_HOMESERVER_ID = "homeserverId"
+CONF_HEATER_ID = "heaterId"
+HOMESERVER_API = "homeserverApi"
