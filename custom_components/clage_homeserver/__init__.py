@@ -12,16 +12,19 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import (
     DOMAIN,
+    CONF_NAME,
+    CONF_HOMESERVERS,
     CONF_HOMESERVER_IP_ADDRESS,
     CONF_HOMESERVER_ID,
     CONF_HEATER_ID,
+    HOMESERVER_API,
 )
 
 from clage_homeserver import ClageHomeServer
 
 _LOGGER = logging.getLogger(__name__)
 
-TEMPERATURE = "heater_temperature"
+HEATER_TEMPERATURE = "heater_temperature"
 HEATER_ID_ATTR = "heater id"
 
 MIN_UPDATE_INTERVAL = timedelta(seconds=10)
@@ -31,14 +34,14 @@ CONFIG_SCHEMA = vol.Schema(
     {
         DOMAIN: vol.Schema(
             {
-                vol.Optional(CONF_CHARGERS, default=[]): vol.All(
+                vol.Optional(CONF_HOMESERVERS, default=[]): vol.All(
                     [
                         cv.ensure_list,
                         [
                             vol.All(
                                 {
                                     vol.Required(CONF_NAME): vol.All(cv.string),
-                                    vol.Required(CONF_HOST): vol.All(
+                                    vol.Required(CONF_HOMESERVER_IP_ADDRESS): vol.All(
                                         ipaddress.ip_address, cv.string
                                     ),
                                 }
@@ -46,8 +49,10 @@ CONFIG_SCHEMA = vol.Schema(
                         ],
                     ]
                 ),
-                vol.Optional(CONF_HOST): vol.All(ipaddress.ip_address, cv.string),
-                vol.Optional(CONF_SERIAL): vol.All(cv.string),
+                vol.Optional(CONF_HOMESERVER_IP_ADDRESS): vol.All(
+                    ipaddress.ip_address, cv.string
+                ),
+                vol.Optional(CONF_HOMESERVER_ID): vol.All(cv.string),
                 vol.Optional(
                     CONF_SCAN_INTERVAL, default=DEFAULT_UPDATE_INTERVAL
                 ): vol.All(cv.time_period, vol.Clamp(min=MIN_UPDATE_INTERVAL)),
@@ -59,7 +64,7 @@ CONFIG_SCHEMA = vol.Schema(
 
 
 async def async_setup_entry(hass, config):
-    _LOGGER.debug("async_Setup_entry")
+    _LOGGER.debug("async_Setup_entry for clage_homeserver component")
     _LOGGER.debug(repr(config.data))
 
     name = config.data[CONF_NAME]
@@ -84,7 +89,7 @@ async def async_unload_entry(hass, entry):
     return True
 
 
-class ChargerStateFetcher:
+class HomeserverStateFetcher:
     def __init__(self, hass):
         self._hass = hass
 
@@ -97,21 +102,21 @@ class ChargerStateFetcher:
             fetchedStatus = await self._hass.async_add_executor_job(
                 homeservers[homeserverId].requestStatus
             )
-            if fetchedStatus.get("car_status", "unknown") != "unknown":
+            if fetchedStatus.get("homeserver_status", "unknown") != "unknown":
                 data[homeserverId] = fetchedStatus
             else:
-                _LOGGER.error(f"Unable to fetch state for Charger {homeserverId}")
+                _LOGGER.error(f"Unable to fetch state for Homeserver {homeserverId}")
         return data
 
 
 async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
     """Set up clage_homeserver platforms and services."""
 
-    _LOGGER.debug("async_setup")
+    _LOGGER.debug("clage_homeserver: async_setup")
     scan_interval = DEFAULT_UPDATE_INTERVAL
 
     hass.data[DOMAIN] = {}
-    chargerApi = {}
+    homeserverApi = {}
     homeservers = []
     if DOMAIN in config:
         scan_interval = config[DOMAIN].get(CONF_SCAN_INTERVAL, DEFAULT_UPDATE_INTERVAL)
@@ -127,7 +132,9 @@ async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
                 clageHomeServer = ClageHomeServer(ipAddress, homeserverId, heaterId)
                 status = clageHomeServer.requestStatus()
                 serial = status["serial_number"]
-            homeservers.append([{CONF_NAME: serial, CONF_HOST: host}])
+            homeservers.append(
+                [{CONF_NAME: serial, CONF_HOMESERVER_IP_ADDRESS: ipAddress}]
+            )
         _LOGGER.debug(repr(homeservers))
 
         for homeserver in homeservers:
@@ -139,20 +146,20 @@ async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
             )
 
             clageHomeServer = ClageHomeServer(ipAddress, homeserverId, heaterId)
-            chargerApi[homeserverId] = clageHomeServer
+            homeserverApi[homeserverId] = clageHomeServer
 
-    hass.data[DOMAIN]["api"] = chargerApi
+    hass.data[DOMAIN]["api"] = homeserverApi
 
-    chargeStateFecher = ChargerStateFetcher(hass)
+    homeserverStateFecher = HomeserverStateFetcher(hass)
 
     coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
         name=DOMAIN,
-        update_method=chargeStateFecher.fetch_states,
+        update_method=homeserverStateFecher.fetch_states,
         update_interval=scan_interval,
     )
-    chargeStateFecher.coordinator = coordinator
+    homeserverStateFecher.coordinator = coordinator
 
     hass.data[DOMAIN]["coordinator"] = coordinator
 
@@ -163,7 +170,8 @@ async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
         heaterIdInput = call.data.get(HEATER_ID_ATTR, "")
 
         temperatureInput = call.data.get(
-            SET_TEMPERATURE, 32  # TODO: dynamic based on chargers absolute_max-setting
+            HEATER_TEMPERATURE,
+            32,  # TODO: dynamic based on chargers absolute_max-setting
         )
         temperature = 0
         if isinstance(temperatureInput, str):
@@ -173,7 +181,7 @@ async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
                 temperature = int(hass.states.get(temperatureInput).state)
             else:
                 _LOGGER.error(
-                    "No valid value for '%s': %s", SET_TEMPERATURE, temperature
+                    "No valid value for '%s': %s", HEATER_TEMPERATURE, temperature
                 )
                 return
         else:
@@ -184,17 +192,17 @@ async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
         if temperature > 60:
             temperature = 60
 
-        if len(homeserverIdInput) > 0:
+        if len(heaterIdInput) > 0:
             _LOGGER.debug(
-                f"set max_current for charger '{homeserverIdInput}' to {temperature}"
+                f"set heater_temperature for homeserver/heater '{heaterIdInput}' to {temperature}"
             )
             try:
                 await hass.async_add_executor_job(
-                    hass.data[DOMAIN]["api"][homeserverIdInput].setTemperature,
+                    hass.data[DOMAIN]["api"][heaterIdInput].setTemperature,
                     temperature,
                 )
             except KeyError:
-                _LOGGER.error(f"Charger with name '{homeserverIdInput}' not found!")
+                _LOGGER.error(f"Heater with id '{heaterIdInput}' not found!")
 
         else:
             for charger in hass.data[DOMAIN]["api"].keys():
@@ -206,7 +214,7 @@ async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
                         hass.data[DOMAIN]["api"][charger].setTemperature, temperature
                     )
                 except KeyError:
-                    _LOGGER.error(f"Charger with name '{chargerName}' not found!")
+                    _LOGGER.error(f"Heater with id '{heaterIdInput}' not found!")
 
         await hass.data[DOMAIN]["coordinator"].async_refresh()
 
@@ -219,7 +227,7 @@ async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
             hass,
             "sensor",
             DOMAIN,
-            {CONF_CHARGERS: chargers, CHARGER_API: chargerApi},
+            {CONF_HOMESERVERS: homeservers, HOMESERVER_API: homeserverApi},
             config,
         )
     )

@@ -20,6 +20,7 @@ from homeassistant.components.sensor import (
 
 from .const import (
     DOMAIN,
+    CONF_HOMESERVERS,
     CONF_HOMESERVER_IP_ADDRESS,
     CONF_HOMESERVER_ID,
     CONF_HEATER_ID,
