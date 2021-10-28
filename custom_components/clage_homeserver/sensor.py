@@ -3,9 +3,9 @@ import logging
 from homeassistant.const import (
     DEVICE_CLASS_SIGNAL_STRENGTH,
     DEVICE_CLASS_TEMPERATURE,
+    DEVICE_CLASS_TIMESTAMP,
     PERCENTAGE,
     TEMP_CELSIUS,
-    TIME_SECONDS,
     VOLUME_FLOW_RATE_CUBIC_METERS_PER_HOUR,
     SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
 )
@@ -44,20 +44,13 @@ _sensors = {
         "deviceClass": None,
     },
     "homeserver_time": {
-        "unit": TIME_SECONDS,
-        "name": "Uhrzeit",
-        "description": "Uhrzeit des Homeservers (UTC)",
+        "unit": None,
+        "name": "Uhrzeit (UTC)",
+        "description": "Uhrzeit des Homeservers in der UTC-Zeitzone (+00:00 Greenwich)",
         "stateclass": STATE_CLASS_MEASUREMENT,
-        "deviceclass": None,
+        "deviceclass": DEVICE_CLASS_TIMESTAMP,
     },
     "homeserver_success": {
-        "unit": None,
-        "name": "",
-        "description": "",
-        "stateclass": STATE_CLASS_MEASUREMENT,
-        "deviceclass": None,
-    },
-    "homeserver_cached": {
         "unit": None,
         "name": "",
         "description": "",
@@ -137,28 +130,28 @@ _sensors = {
     "heater_status_tP1": {
         "unit": TEMP_CELSIUS,
         "name": "Temperaturspeicher 1",
-        "description": "",
+        "description": "Speicherplatz 1 für individuelle Temperatureinstellungen",
         "stateclass": STATE_CLASS_MEASUREMENT,
         "deviceclass": DEVICE_CLASS_TEMPERATURE,
     },
     "heater_status_tP2": {
         "unit": TEMP_CELSIUS,
         "name": "Temperaturspeicher 2",
-        "description": "",
+        "description": "Speicherplatz 2 für individuelle Temperatureinstellungen",
         "stateclass": STATE_CLASS_MEASUREMENT,
         "deviceclass": DEVICE_CLASS_TEMPERATURE,
     },
     "heater_status_tP3": {
         "unit": TEMP_CELSIUS,
         "name": "Temperaturspeicher 3",
-        "description": "",
+        "description": "Speicherplatz 3 für individuelle Temperatureinstellungen",
         "stateclass": STATE_CLASS_MEASUREMENT,
         "deviceclass": DEVICE_CLASS_TEMPERATURE,
     },
     "heater_status_tP4": {
         "unit": TEMP_CELSIUS,
         "name": "Temperaturspeicher 4",
-        "description": "",
+        "description": "Speicherplatz 4 für individuelle Temperatureinstellungen",
         "stateclass": STATE_CLASS_MEASUREMENT,
         "deviceclass": DEVICE_CLASS_TEMPERATURE,
     },
@@ -221,15 +214,15 @@ _sensors = {
 }
 
 
-def _create_sensors_for_homeserver(homeserverName, hass):
+def _create_sensors_for_homeserver(homeserver_name, hass):
     entities = []
     for sensor in _sensors:
-        _LOGGER.debug("Adding Sensor: %s for homeserver %s", {sensor}, {homeserverName})
+        _LOGGER.debug("Adding Sensor: %s for homeserver %s", sensor, homeserver_name)
         entities.append(
             ClageHomeserverSensor(
                 hass.data[DOMAIN]["coordinator"],
-                f"sensor.clagehomeserver_{homeserverName}_{sensor}",
-                homeserverName,
+                f"sensor.clagehomeserver_{homeserver_name}_{sensor}",
+                homeserver_name,
                 _sensors.get(sensor).get("name"),
                 sensor,
                 _sensors.get(sensor).get("unit"),
@@ -245,12 +238,14 @@ async def async_setup_entry(
     config_entry: config_entries.ConfigEntry,
     async_add_entities,
 ):
+    """Set up clage homeserver Sensor platform."""
+
     _LOGGER.debug("Setup sensors")
     config = config_entry.as_dict()["data"]
 
     homeserver_name = config[CONF_NAME]
 
-    _LOGGER.debug("homeserver name: %s", {homeserver_name})
+    _LOGGER.debug("homeserver name: %s", homeserver_name)
     async_add_entities(_create_sensors_for_homeserver(homeserver_name, hass))
 
 
@@ -265,7 +260,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     entities = []
     for homeserver in homeservers:
         homeserver_name = homeserver[0][CONF_NAME]
-        _LOGGER.debug("homeserver name: %s", {homeserver_name})
+        _LOGGER.debug("homeserver name: %s", homeserver_name)
         entities.extend(_create_sensors_for_homeserver(homeserver_name, hass))
 
     async_add_entities(entities)

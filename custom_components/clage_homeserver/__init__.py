@@ -24,8 +24,9 @@ from clage_homeserver import ClageHomeServer
 
 _LOGGER = logging.getLogger(__name__)
 
-HEATER_TEMPERATURE = "heater_temperature"
-HEATER_ID_ATTR = "heater id"
+SERVICE_HOMESERVE_NAME_ATTRIBUTE = "homeserver_name"
+SERVICE_HEATER_ID_ATTRIBUTE = "heater_id"
+SERVICE_HEATER_TEMPERATURE = "temperature"
 
 MIN_UPDATE_INTERVAL = timedelta(seconds=10)
 DEFAULT_UPDATE_INTERVAL = timedelta(seconds=20)
@@ -92,7 +93,7 @@ async def async_setup_entry(hass, config):
 async def async_unload_entry(hass, entry):
     """Unload the integration clage_homeserver from HOME ASSISTANT"""
 
-    _LOGGER.debug("Unloading homeserver %s", {entry.data[CONF_NAME]})
+    _LOGGER.debug("Unloading homeserver %s", entry.data[CONF_NAME])
     hass.data[DOMAIN]["api"].pop(entry.data[CONF_NAME])
     return True
 
@@ -110,7 +111,7 @@ class HomeserverStateFetcher:
         homeservers = self._hass.data[DOMAIN]["api"]
         data = self.coordinator.data if self.coordinator.data else {}
         for homeserver_id in homeservers.keys():
-            _LOGGER.debug("Update states for %s", {homeserver_id})
+            _LOGGER.debug("Update states for %s", homeserver_id)
             homeserver = homeservers[homeserver_id]
             fetched_status = await self._hass.async_add_executor_job(
                 homeserver.requestStatus
@@ -120,7 +121,7 @@ class HomeserverStateFetcher:
                 data[homeserver_id] = fetched_status
             else:
                 _LOGGER.error(
-                    "Unable to fetch state for the Homeserver %s", {homeserver_id}
+                    "Unable to fetch state for the Homeserver %s", homeserver_id
                 )
         return data
 
@@ -145,10 +146,10 @@ async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
             homeserver_id = homeserver[0][CONF_HOMESERVER_ID]
             heater_id = homeserver[0][CONF_HEATER_ID]
             _LOGGER.debug(
-                "ip_address: '%s' homeserver_id: '%s' heater_id: '%s'",
-                {ip_address},
-                {homeserver_id},
-                {heater_id},
+                "ip_address: '%s', homeserver_id: '%s', heater_id: '%s'",
+                ip_address,
+                homeserver_id,
+                heater_id,
             )
             clage_home_server = ClageHomeServer(ip_address, homeserver_id, heater_id)
             homeserver_api[homeserver_name] = clage_home_server
@@ -172,12 +173,9 @@ async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
 
     async def async_handle_set_temperature(call):
         """Handle the service call to set the temperature of the heater."""
-        heater_id_input = call.data.get(HEATER_ID_ATTR, "")
-
-        temperature_input = call.data.get(
-            HEATER_TEMPERATURE,
-            32,
-        )
+        homeserver_name_input = call.data.get(SERVICE_HOMESERVE_NAME_ATTRIBUTE, "")
+        heater_id_input = call.data.get(SERVICE_HEATER_ID_ATTRIBUTE, "")
+        temperature_input = call.data.get(SERVICE_HEATER_TEMPERATURE, "")
         temperature = 0
         if isinstance(temperature_input, str):
             if temperature_input.isnumeric():
@@ -186,7 +184,9 @@ async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
                 temperature = int(hass.states.get(temperature_input).state)
             else:
                 _LOGGER.error(
-                    "No valid value for '%s': %s", HEATER_TEMPERATURE, temperature
+                    "No valid value for '%s': %s",
+                    SERVICE_HEATER_TEMPERATURE,
+                    temperature,
                 )
                 return
         else:
@@ -197,33 +197,23 @@ async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
         if temperature > 60:
             temperature = 60
 
-        if len(heater_id_input) > 0:
+        if (len(heater_id_input) > 0) and len(heater_id_input) > 0:
             _LOGGER.debug(
-                "Set temperature (setpoint) for heater '%s' to %d °C",
-                {heater_id_input},
-                {temperature},
+                "Set temperature (setpoint) for homerserver/heater %s/%s to %s °C",
+                homeserver_name_input,
+                heater_id_input,
+                temperature,
             )
+
             try:
+                homeservers = hass.data[DOMAIN]["api"]
+                homeserver = homeservers[homeserver_name]
                 await hass.async_add_executor_job(
-                    hass.data[DOMAIN]["api"][heater_id_input].setTemperature,
+                    homeserver.setTemperature,
                     temperature,
                 )
             except KeyError:
-                _LOGGER.error("Heater with id '%s' not found!", {heater_id_input})
-
-        else:
-            for homeserver in hass.data[DOMAIN]["api"].keys():
-                try:
-                    _LOGGER.debug(
-                        "Set_temperature for heater %s to %d",
-                        {homeserver},
-                        {temperature},
-                    )
-                    await hass.async_add_executor_job(
-                        hass.data[DOMAIN]["api"][homeserver].setTemperature, temperature
-                    )
-                except KeyError:
-                    _LOGGER.error("Heater with id '%s' not found!", {heater_id_input})
+                _LOGGER.error("Heater with id '%s' not found!", heater_id_input)
 
         await hass.data[DOMAIN]["coordinator"].async_refresh()
 
