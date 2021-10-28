@@ -171,7 +171,7 @@ async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
 
         temperatureInput = call.data.get(
             HEATER_TEMPERATURE,
-            32,  # TODO: dynamic based on chargers absolute_max-setting
+            32,
         )
         temperature = 0
         if isinstance(temperatureInput, str):
@@ -205,13 +205,13 @@ async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
                 _LOGGER.error(f"Heater with id '{heaterIdInput}' not found!")
 
         else:
-            for charger in hass.data[DOMAIN]["api"].keys():
+            for homeserver in hass.data[DOMAIN]["api"].keys():
                 try:
                     _LOGGER.debug(
-                        f"set_temperature for heater '{charger}' to {temperature}"
+                        f"set_temperature for heater '{homeserver}' to {temperature}"
                     )
                     await hass.async_add_executor_job(
-                        hass.data[DOMAIN]["api"][charger].setTemperature, temperature
+                        hass.data[DOMAIN]["api"][homeserver].setTemperature, temperature
                     )
                 except KeyError:
                     _LOGGER.error(f"Heater with id '{heaterIdInput}' not found!")

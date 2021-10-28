@@ -122,7 +122,7 @@ def _create_sensors_for_homeserver(homeserverName, hass):
 
     for sensor in _sensors:
 
-        _LOGGER.debug(f"adding Sensor: {sensor} for charger {homeserverName}")
+        _LOGGER.debug(f"adding Sensor: {sensor} for homerserver {homeserverName}")
         sensorUnit = (
             _sensorUnits.get(sensor).get("unit") if _sensorUnits.get(sensor) else ""
         )
@@ -161,12 +161,12 @@ async def async_setup_entry(
 
     homeserverName = config[CONF_NAME]
 
-    _LOGGER.debug(f"charger name: '{homeserverName}'")
+    _LOGGER.debug(f"homerserver name: '{homeserverName}'")
     async_add_entities(_create_sensors_for_homerserver(homeserverName, hass))
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
-    """Set up go-eCharger Sensor platform."""
+    """Set up clage homeserver Sensor platform."""
     _LOGGER.debug("setup_platform")
     if discovery_info is None:
         return
@@ -194,7 +194,7 @@ class HomserverSensor(CoordinatorEntity, SensorEntity):
         stateClass,
         deviceClass,
     ):
-        """Initialize the go-eCharger sensor."""
+        """Initialize the clage homeserver sensor."""
 
         super().__init__(coordinator)
         self.homeservername = homeserverName
@@ -225,12 +225,12 @@ class HomserverSensor(CoordinatorEntity, SensorEntity):
     @property
     def unique_id(self):
         """Return the unique_id of the sensor."""
-        return f"{self._chargername}_{self._attribute}"
+        return f"{self.homeservername}_{self._attribute}"
 
     @property
     def state(self):
         """Return the state of the sensor."""
-        return self.coordinator.data[self._chargername][self._attribute]
+        return self.coordinator.data[self.homeservername][self._attribute]
 
     @property
     def unit_of_measurement(self):
