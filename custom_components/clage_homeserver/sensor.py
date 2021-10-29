@@ -1,22 +1,27 @@
 """Platform for clage_homeserver sensor integration."""
 import logging
 from homeassistant.const import (
+    CURRENCY_CENT,
+    DEVICE_CLASS_ENERGY,
     DEVICE_CLASS_SIGNAL_STRENGTH,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_TIMESTAMP,
+    ENERGY_KILO_WATT_HOUR,
     PERCENTAGE,
     TEMP_CELSIUS,
+    TIME_SECONDS,
     VOLUME_FLOW_RATE_CUBIC_METERS_PER_HOUR,
     SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+    VOLUME_LITERS,
 )
 
 from homeassistant import core, config_entries
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.components.sensor import (
     STATE_CLASS_MEASUREMENT,
+    STATE_CLASS_TOTAL_INCREASING,
     SensorEntity,
 )
-
 
 from .const import DOMAIN, CONF_HOMESERVERS, CONF_NAME
 
@@ -211,26 +216,173 @@ _sensors = {
         "stateclass": STATE_CLASS_MEASUREMENT,
         "deviceclass": None,
     },
+    "heater_status_error": {
+        "unit": None,
+        "name": "",
+        "description": "",
+        "stateclass": STATE_CLASS_MEASUREMENT,
+        "deviceclass": None,
+    },
+    "heater_setup_swVersion": {
+        "unit": None,
+        "name": "Softwareversion",
+        "description": "Version der Gerätesoftware",
+        "stateclass": STATE_CLASS_MEASUREMENT,
+        "deviceclass": None,
+    },
+    "heater_setup_serialDevice": {
+        "unit": None,
+        "name": "Gerätseriennummer",
+        "description": "Seriennummer des Gerätes",
+        "stateclass": STATE_CLASS_MEASUREMENT,
+        "deviceclass": None,
+    },
+    "heater_setup_serialPowerUnit": {
+        "unit": None,
+        "name": "Leistungsteilsseriennummer",
+        "description": "Seriennummer des Leistungsteils",
+        "stateclass": STATE_CLASS_MEASUREMENT,
+        "deviceclass": None,
+    },
+    "heater_setup_flowMax": {
+        "unit": VOLUME_FLOW_RATE_CUBIC_METERS_PER_HOUR,
+        "name": "Durchflussmengenbegrenzung (Liter/Minute)",
+        "description": "Durchflussmengenbegrenzung 0/255=aus, 253=ECO,254=AUTO",
+        "stateclass": STATE_CLASS_MEASUREMENT,
+        "deviceclass": None,
+    },
+    "heater_setup_loadShedding": {
+        "unit": None,
+        "name": "Lastabwurf",
+        "description": "",
+        "stateclass": STATE_CLASS_MEASUREMENT,
+        "deviceclass": None,
+    },
+    "heater_setup_scaldProtection": {
+        "unit": None,
+        "name": "Verbrühschutztemperatur",
+        "description": "Verbrühschutztemperatur; 0=aus; entspr. tLimit",
+        "stateclass": STATE_CLASS_MEASUREMENT,
+        "deviceclass": None,
+    },
+    "heater_setup_sound": {
+        "unit": None,
+        "name": "Signalton",
+        "description": "",
+        "stateclass": STATE_CLASS_MEASUREMENT,
+        "deviceclass": None,
+    },
+    "heater_setup_fcpAddr": {
+        "unit": None,
+        "name": "Adresse",
+        "description": "",
+        "stateclass": STATE_CLASS_MEASUREMENT,
+        "deviceclass": None,
+    },
+    "heater_setup_powerCosts": {
+        "unit": CURRENCY_CENT,
+        "name": "Kosten pro kWh (Cent)",
+        "description": "",
+        "stateclass": STATE_CLASS_MEASUREMENT,
+        "deviceclass": None,
+    },
+    "heater_setup_powerMax": {
+        "unit": POWER_KILO_WATT,
+        "name": "Leistungsaufnahme (max.)",
+        "description": "Höchstwert der Leistungsaufnahme",
+        "stateclass": STATE_CLASS_MEASUREMENT,
+        "deviceclass": None,
+    },
+    "heater_setup_calValue": {
+        "unit": None,
+        "name": "Interner Kontrollwert",
+        "description": "",
+        "stateclass": STATE_CLASS_MEASUREMENT,
+        "deviceclass": None,
+    },
+    "heater_setup_timerPowerOn": {
+        "unit": TIME_SECONDS,
+        "name": "Heizdauer",
+        "description": "",
+        "stateclass": STATE_CLASS_MEASUREMENT,
+        "deviceclass": None,
+    },
+    "heater_setup_timerLifetime": {
+        "unit": TIME_SECONDS,
+        "name": "Gesamtbetriebsdauer",
+        "description": "",
+        "stateclass": STATE_CLASS_TOTAL_INCREASING,
+        "deviceclass": None,
+    },
+    "heater_setup_timerStandby": {
+        "unit": TIME_SECONDS,
+        "name": "Betriebsdauer seit dem letzten Stromausfall",
+        "description": "",
+        "stateclass": STATE_CLASS_MEASUREMENT,
+        "deviceclass": None,
+    },
+    "heater_setup_totalPowerConsumption": {
+        "unit": ENERGY_KILO_WATT_HOUR,
+        "name": "Gesamtleistungsaufnahme",
+        "description": "",
+        "stateclass": STATE_CLASS_TOTAL_INCREASING,
+        "deviceclass": None,
+    },
+    "heater_setup_totalWaterConsumption": {
+        "unit": VOLUME_LITERS,
+        "name": "Gesamtwassermenge",
+        "description": "",
+        "stateclass": STATE_CLASS_TOTAL_INCREASING,
+        "deviceclass": None,
+    },
+    "count_watertaps": {
+        "unit": None,
+        "name": "Anzahl Zapfungen",
+        "description": "Gesamtanzahl aller Zapfungen seit Inbetriebnahme",
+        "stateclass": STATE_CLASS_TOTAL_INCREASING,
+        "deviceclass": None,
+    },
+    "sum_length": {
+        "unit": TIME_SECONDS,
+        "name": "Gesamt-Nutzungsdauer",
+        "description": "Gesamte Nutzungsdauer aller Zapfungen seit Inbetriebnahme",
+        "stateclass": STATE_CLASS_TOTAL_INCREASING,
+        "deviceclass": None,
+    },
+    "sum_power": {
+        "unit": ENERGY_KILO_WATT_HOUR,
+        "name": "Gesamt-Energieverbrauch",
+        "description": "Gesamter Energieverbrauch aller Zapfungen seit Inbetriebnahme",
+        "stateclass": STATE_CLASS_TOTAL_INCREASING,
+        "deviceclass": DEVICE_CLASS_ENERGY,
+    },
+    "sum_water": {
+        "unit": VOLUME_LITERS,
+        "name": "Gesamt-Wasserverbrauch",
+        "description": "Gesamter Wasserverbrauch aller Zapfungen seit Inbetriebnahme",
+        "stateclass": STATE_CLASS_MEASUREMENT,
+        "deviceclass": None,
+    },
 }
 
 
 def _create_sensors_for_homeserver(homeserver_name, hass):
-    entities = []
-    for sensor in _sensors:
-        _LOGGER.debug("Adding Sensor: %s for homeserver %s", sensor, homeserver_name)
-        entities.append(
+    _entities = []
+    for _sensor in _sensors:
+        _LOGGER.debug("Adding Sensor: %s for homeserver %s", _sensor, homeserver_name)
+        _entities.append(
             ClageHomeserverSensor(
                 hass.data[DOMAIN]["coordinator"],
-                f"sensor.clagehomeserver_{homeserver_name}_{sensor}",
+                f"sensor.clagehomeserver_{homeserver_name}_{_sensor}",
                 homeserver_name,
-                _sensors.get(sensor).get("name"),
-                sensor,
-                _sensors.get(sensor).get("unit"),
-                _sensors.get(sensor).get("stateClass"),
-                _sensors.get(sensor).get("deviceClass"),
+                _sensors.get(_sensor).get("name"),
+                _sensor,
+                _sensors.get(_sensor).get("unit"),
+                _sensors.get(_sensor).get("stateClass"),
+                _sensors.get(_sensor).get("deviceClass"),
             )
         )
-    return entities
+    return _entities
 
 
 async def async_setup_entry(
@@ -238,19 +390,19 @@ async def async_setup_entry(
     config_entry: config_entries.ConfigEntry,
     async_add_entities,
 ):
-    """Set up clage homeserver Sensor platform."""
+    """Set up CLAGE homeserver Sensor platform."""
 
     _LOGGER.debug("Setup sensors")
-    config = config_entry.as_dict()["data"]
+    _config = config_entry.as_dict()["data"]
 
-    homeserver_name = config[CONF_NAME]
+    homeserver_name = _config[CONF_NAME]
 
     _LOGGER.debug("homeserver name: %s", homeserver_name)
     async_add_entities(_create_sensors_for_homeserver(homeserver_name, hass))
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
-    """Set up clage homeserver Sensor platform."""
+    """Set up CLAGE Homeserver sensor platform."""
     _LOGGER.debug("setup_platform")
     if discovery_info is None:
         return
@@ -280,7 +432,7 @@ class ClageHomeserverSensor(CoordinatorEntity, SensorEntity):
         stateClass,
         deviceClass,
     ):
-        """Initializes the clage homeserver sensors."""
+        """Initializes the CLAGE Homeserver sensors."""
 
         super().__init__(coordinator)
         self.homeservername = homeserverName

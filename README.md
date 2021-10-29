@@ -11,7 +11,9 @@ Integration for Homeassistant to view and Control the Clage Homeserver for elect
 - no cloud connection needed to control the heater - only local ip-access needed.
 
 # Warning: WIP - Work in progress
-This is an early test version of the Integration; it does not work yet!
+This is an early test version of the Integration.
+It uses this [Python module](https://github.com/klacol/clage_homeserver) to connect to the REST API of the heater.
+
 
 # Installation
 
@@ -37,6 +39,7 @@ clage_homeserver:
       ipAddress: 192.168.0.78
       homeserverId: F8F005DB0CD7
       heaterId: 2049DB0CD7
+  scan_interval: 15  # in seconds, Optional
 ```
 
 ```yaml

@@ -54,10 +54,6 @@ CONFIG_SCHEMA = vol.Schema(
                         ],
                     ]
                 ),
-                vol.Optional(CONF_HOMESERVER_IP_ADDRESS): vol.All(
-                    ipaddress.ip_address, cv.string
-                ),
-                vol.Optional(CONF_HOMESERVER_ID): vol.All(cv.string),
                 vol.Optional(
                     CONF_SCAN_INTERVAL, default=DEFAULT_UPDATE_INTERVAL
                 ): vol.All(cv.time_period, vol.Clamp(min=MIN_UPDATE_INTERVAL)),
@@ -111,18 +107,33 @@ class HomeserverStateFetcher:
         homeservers = self._hass.data[DOMAIN]["api"]
         data = self.coordinator.data if self.coordinator.data else {}
         for homeserver_id in homeservers.keys():
-            _LOGGER.debug("Update states for %s", homeserver_id)
             homeserver = homeservers[homeserver_id]
-            fetched_status = await self._hass.async_add_executor_job(
-                homeserver.requestStatus
+
+            _LOGGER.debug(
+                "Fetch the states (status) from the homeserver %s und update them in Home Assistant",
+                homeserver_id,
             )
-            request_status = fetched_status.get("homeserver_success", False)
-            if request_status is True:
-                data[homeserver_id] = fetched_status
-            else:
-                _LOGGER.error(
-                    "Unable to fetch state for the Homeserver %s", homeserver_id
-                )
+            fetched_states = dict(
+                await self._hass.async_add_executor_job(homeserver.requestStatus)
+            )
+
+            _LOGGER.debug(
+                "Fetch the states (setup) from the homeserver %s und update them in Home Assistant",
+                homeserver_id,
+            )
+            fetched_states.update(
+                await self._hass.async_add_executor_job(homeserver.requestSetup)
+            )
+
+            _LOGGER.debug(
+                "Fetch the consumption logs from the homeserver %s und update them in Home Assistant",
+                homeserver_id,
+            )
+            fetched_states.update(
+                await self._hass.async_add_executor_job(homeserver.GetConsumption)
+            )
+
+            data[homeserver_id] = fetched_states
         return data
 
 
@@ -192,10 +203,7 @@ async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
         else:
             temperature = temperature_input
 
-        if temperature < 10:
-            temperature = 10
-        if temperature > 60:
-            temperature = 60
+        temperature = min(max(temperature, 10), 60)
 
         if (len(heater_id_input) > 0) and len(heater_id_input) > 0:
             _LOGGER.debug(
