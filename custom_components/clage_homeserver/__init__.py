@@ -67,7 +67,7 @@ CONFIG_SCHEMA = vol.Schema(
 async def async_setup_entry(hass, config):
     """Setup the integration in HOME ASSISTANT (Read and apply the configuration)"""
 
-    _LOGGER.debug("async_Setup_entry for clage_homeserver component")
+    _LOGGER.info("async_Setup_entry for clage_homeserver component")
     _LOGGER.debug(repr(config.data))
 
     name = config.data[CONF_NAME]
@@ -89,7 +89,7 @@ async def async_setup_entry(hass, config):
 async def async_unload_entry(hass, entry):
     """Unload the integration clage_homeserver from HOME ASSISTANT"""
 
-    _LOGGER.debug("Unloading homeserver %s", entry.data[CONF_NAME])
+    _LOGGER.info("Unloading homeserver %s", entry.data[CONF_NAME])
     hass.data[DOMAIN]["api"].pop(entry.data[CONF_NAME])
     return True
 
@@ -110,7 +110,7 @@ class HomeserverStateFetcher:
             homeserver = homeservers[homeserver_id]
 
             _LOGGER.debug(
-                "Fetch the states (status) from the homeserver %s und update them in Home Assistant",
+                "Fetch the states (status) from the CLAGE Homeserver '%s' und update them in Home Assistant",
                 homeserver_id,
             )
             fetched_states = dict(
@@ -118,7 +118,7 @@ class HomeserverStateFetcher:
             )
 
             _LOGGER.debug(
-                "Fetch the states (setup) from the homeserver %s und update them in Home Assistant",
+                "Fetch the states (setup) from the CLAGE Homeserver '%s' und update them in Home Assistant",
                 homeserver_id,
             )
             fetched_states.update(
@@ -126,7 +126,7 @@ class HomeserverStateFetcher:
             )
 
             _LOGGER.debug(
-                "Fetch the consumption logs from the homeserver %s und update them in Home Assistant",
+                "Fetch the consumption logs from the CLAGE Homeserver '%s' und update them in Home Assistant",
                 homeserver_id,
             )
             fetched_states.update(
@@ -156,8 +156,8 @@ async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
             ip_address = homeserver[0][CONF_HOMESERVER_IP_ADDRESS]
             homeserver_id = homeserver[0][CONF_HOMESERVER_ID]
             heater_id = homeserver[0][CONF_HEATER_ID]
-            _LOGGER.debug(
-                "ip_address: '%s', homeserver_id: '%s', heater_id: '%s'",
+            _LOGGER.info(
+                "Setup: ip_address: '%s', homeserver_id: '%s', heater_id: '%s'",
                 ip_address,
                 homeserver_id,
                 heater_id,

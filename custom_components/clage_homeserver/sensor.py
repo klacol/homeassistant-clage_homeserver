@@ -335,32 +335,32 @@ _sensors = {
         "stateclass": STATE_CLASS_TOTAL_INCREASING,
         "deviceclass": None,
     },
-    "count_watertaps": {
+    "number_of_watertaps": {
         "unit": None,
         "name": "Anzahl Zapfungen",
         "description": "Gesamtanzahl aller Zapfungen seit Inbetriebnahme",
         "stateclass": STATE_CLASS_TOTAL_INCREASING,
         "deviceclass": None,
     },
-    "sum_length": {
+    "usage_time": {
         "unit": TIME_SECONDS,
         "name": "Gesamt-Nutzungsdauer",
         "description": "Gesamte Nutzungsdauer aller Zapfungen seit Inbetriebnahme",
         "stateclass": STATE_CLASS_TOTAL_INCREASING,
         "deviceclass": None,
     },
-    "sum_power": {
+    "consumption_energy": {
         "unit": ENERGY_KILO_WATT_HOUR,
         "name": "Gesamt-Energieverbrauch",
         "description": "Gesamter Energieverbrauch aller Zapfungen seit Inbetriebnahme",
         "stateclass": STATE_CLASS_TOTAL_INCREASING,
         "deviceclass": DEVICE_CLASS_ENERGY,
     },
-    "sum_water": {
+    "consumption_water": {
         "unit": VOLUME_LITERS,
         "name": "Gesamt-Wasserverbrauch",
         "description": "Gesamter Wasserverbrauch aller Zapfungen seit Inbetriebnahme",
-        "stateclass": STATE_CLASS_MEASUREMENT,
+        "stateclass": STATE_CLASS_TOTAL_INCREASING,
         "deviceclass": None,
     },
 }
@@ -370,16 +370,21 @@ def _create_sensors_for_homeserver(homeserver_name, hass):
     _entities = []
     for _sensor in _sensors:
         _LOGGER.debug("Adding Sensor: %s for homeserver %s", _sensor, homeserver_name)
+        sensor_name = _sensors.get(_sensor).get("name", "")
+        sensor_attribute = _sensor
+        sensor_unit = _sensors.get(_sensor).get("unit", "")
+        sensor_state_class = _sensors.get(_sensor).get("stateclass")
+        sensor_device_class = _sensors.get(_sensor).get("deviceClass")
         _entities.append(
             ClageHomeserverSensor(
-                hass.data[DOMAIN]["coordinator"],
-                f"sensor.clagehomeserver_{homeserver_name}_{_sensor}",
-                homeserver_name,
-                _sensors.get(_sensor).get("name"),
-                _sensor,
-                _sensors.get(_sensor).get("unit"),
-                _sensors.get(_sensor).get("stateClass"),
-                _sensors.get(_sensor).get("deviceClass"),
+                coordinator=hass.data[DOMAIN]["coordinator"],
+                entity_id=f"sensor.clagehomeserver_{homeserver_name}_{_sensor}",
+                homeserverName=homeserver_name,
+                name=sensor_name,
+                attribute=sensor_attribute,
+                unit=sensor_unit,
+                stateClass=sensor_state_class,
+                deviceClass=sensor_device_class,
             )
         )
     return _entities
