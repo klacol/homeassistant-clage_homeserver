@@ -1,18 +1,35 @@
 {
-    "config": {
-        "title": "Add Clage Homeserver",
-        "step": {
-            "user": {
-                "title": "Clage Homeserver Setup",
-			"description": "If you need help with the configuration have a look here: https://github.com/klacol/homeassistant-clage_homeserver",
-                "data": {
-                    "host": "Hostname or IP-Address of the Homeserver in the local network",
-                    "homeserver_id": "unique id of the Homeserver",
-                    "heater_id": "unique name of the heater, that is connected to the Homeserver"
-                }
-            }
-        },
-        "abort": {
+  "title": "CLAGE Homeserver integration",
+  "config": {
+    "title": "Add Clage Homeserver",
+    "step": {
+      "user": {
+        "title": "Clage Homeserver Setup",
+        "description": "If you need help with the configuration have a look here: https://github.com/klacol/homeassistant-clage_homeserver",
+        "data": {
+          "host": "Hostname or IP-Address of the Homeserver in the local network",
+          "homeserver_id": "unique id of the Homeserver",
+          "heater_id": "unique name of the heater, that is connected to the Homeserver"
         }
+      }
+    },
+    "abort": {
+      "cannot_connect": "Failed to connect",
+      "missing_configuration": "The component is not configured. Please follow the documentation.",
+      "no_url_available": "No URL available. For information about this error, [check the help section]({docs_url})",
+      "single_instance_allowed": "Already configured. Only a single configuration possible."
     }
+  },
+  "sensors": [
+    {
+      "system_name": "homeserver_version",
+      "name": "Homeserver version",
+      "definition": "Version der Software und des API des Homeservers"
+    },
+    {
+      "system_name": "homeserver_time",
+      "name": "Uhrzeit (UTC)",
+      "definition": "Uhrzeit des Homeservers in der UTC-Zeitzone (+00:00 Greenwich)"
+    }
+  ]
 }
