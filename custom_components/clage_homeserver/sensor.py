@@ -81,14 +81,14 @@ _sensors = {
         "name": "Individueller Name",
         "description": "Individueller Name des Durchlauferhitzers, der bei der Konfiguration vergeben wurde, z.B. 'Warmwasser Bad oben'",
         "stateclass": STATE_CLASS_MEASUREMENT,
-        "deviceclass": DEVICE_CLASS_TEMPERATURE,
+        "deviceclass": None,
     },
     "heater_connected": {
         "unit": None,
         "name": "",
         "description": "",
         "stateclass": STATE_CLASS_MEASUREMENT,
-        "deviceclass": DEVICE_CLASS_TEMPERATURE,
+        "deviceclass": None,
     },
     "heater_signal": {
         "unit": None,
