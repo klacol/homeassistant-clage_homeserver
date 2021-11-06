@@ -1,0 +1,29 @@
+{
+  "config": {
+    "title": "CLAGE Homeserver hinzufügen",
+    "step": {
+      "user": {
+        "title": "Clage Homeserver Setup",
+        "description": "Wenn Du Hilfe bei der Konfiguration brauchst, dann siehe hier nach: https://github.com/klacol/homeassistant-clage_homeserver",
+        "data": {
+          "name": "Der Name des Homeservers",
+          "ipAddress": "IP-Addresse des Homeservers im lokalen Netzwerk (z.B. 192.168.9.65)",
+          "homeserverId": "ID des Homeservers. Diese kann in der Clage Smart-Control APP abgerufen werden, unter 'Einstellung/Geräte/DSX Server/Server-ID",
+          "heaterId": "ID des Durchlauferhitzers, der an den Homeserver angeschlossen oder in dem der Homeserver integriert ist. Diese kann in der Clage Smart-Control APP abgerufen werden, unter 'Einstellung/Geräte/DSX Touch/Gerätekennung"
+        }
+      }
+    },
+    "abort": {
+      "cannot_connect": "Verbindung fehlgeschlagen",
+      "missing_configuration": "Die Komponente ist nicht konfiguriert. Bitte der Dokumentation folgen.",
+      "no_url_available": "Keine URL verfügbar. Informationen zu diesem Fehler findest du [im Hilfebereich]({docs_url}).",
+      "single_instance_allowed": "Bereits konfiguriert. Nur eine einzige Konfiguration möglich."
+    },
+    "error": {
+      "already_configured": "Ger\u00e4t ist bereits konfiguriert",
+      "could_not_connect": "Es konnte keine Verbindung zur Solaredge-API hergestellt werden",
+      "homeserver_not_active": "homeserver_not_active",
+      "invalid_ip": "invalid_ip"
+    }
+  }
+}

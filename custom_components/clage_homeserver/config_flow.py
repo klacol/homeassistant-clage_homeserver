@@ -104,6 +104,7 @@ class Clage_HomeserverConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     return self.async_create_entry(
                         title=name,
                         data={
+                            CONF_NAME: name,
                             CONF_HOMESERVER_IP_ADDRESS: ip_address,
                             CONF_HOMESERVER_ID: homeserver_id,
                             CONF_HEATER_ID: heater_id,
@@ -112,6 +113,7 @@ class Clage_HomeserverConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         else:
             user_input = {
+                CONF_NAME: "",
                 CONF_HOMESERVER_IP_ADDRESS: "",
                 CONF_HOMESERVER_ID: "",
                 CONF_HEATER_ID: "",
