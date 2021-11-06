@@ -1,6 +1,6 @@
 {
   "domain": "clage_homeserver",
-  "name": "clage_homeserver",
+  "name": "CLAGE Homeserver",
   "version": "0.1.2",
   "documentation": "https://github.com/klacol/homeassistant-clage_homeserver",
   "issue_tracker": "https://github.com/klacol/homeassistant-clage_homeserver/issues",
@@ -10,4 +10,3 @@
   "codeowners": ["@klacol"],
   "requirements": ["clage-homeserver==0.1.2"]
 }
-

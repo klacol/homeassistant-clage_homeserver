@@ -105,7 +105,7 @@ _sensors = {
         "deviceclass": "",
     },
     "heater_lqi": {
-        "unit": TEMP_CELSIUS,
+        "unit": None,
         "name": "Verbindungsqualität",
         "description": "Zahlenwert als Indikator für Verbindungsqualität (kleiner => besser)",
         "stateclass": STATE_CLASS_MEASUREMENT,
