@@ -1,46 +1,44 @@
-# Home Assistant integration for the Clage Homeserver (WIP)
+# Home Assistant integration for the water heater CLAGE DSX Touch connected through an Clage Homeserver
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 [![Validate with hassfest](https://github.com/klacol/homeassistant-clage_homeserver/actions/workflows/hassfest.yaml/badge.svg)](https://github.com/klacol/homeassistant-clage_homeserver/actions/workflows/hassfest.yaml)
 
-Integration for Homeassistant to view and Control the Clage Homeserver for electric waterheaters via the local ip-interface via API Version 1.4.
+Integration for Homeassistant to view and Control the Clage Homeserver for continuous electric waterheaters via the local ip-interface via API Version 1.4.
 
 ## Features
-- attributes from heater available as sensors
-- change the water temperature of the heater
-- no cloud connection needed to control the heater - only local ip-access needed.
+- Register in Home Assistant in the UI based configuration flow (no yaml)
+- Show sensor values from the heater
+- Change the water temperature of the heater
+- No cloud connection needed to control the heater - only local ip-access needed.
 
 # Warning: WIP - Work in progress
-This is an early test version of the Integration.
-It uses this [Python module](https://github.com/klacol/clage_homeserver) to connect to the REST API of the heater.
+This is an early version of the Integration (custom component).
+It uses the Python module [clage_homeserver](https://pypi.org/project/clage-homeserver/) to connect to the REST API of the heater.
+
 
 
 # Installation
 
-- clone this repository
+## Option 1: Install it through HACS (recommended)
+
+## Option 2: Install it manually
+
+- Clone this repository
 ```
 git clone https://github.com/klacol/homeassistant-clage_homeserver.git
 ```
-- copy the content of the `custom_components`-Folder to the `custom_components` folder of your home-assistant installation
+- Copy the content of the `custom_components`-Folder to the `custom_components` folder of your home-assistant installation
 
 ```
 # mkdir -p <your-ha-config-dir>/custom_components
 # cp -r custom_components/clage_homeserver <your-ha-config-dir>/custom_components
 ```
 
+- Install the integration and use the config flow in the frontent
+
 # Example Config
 
 ## `configuration.yaml`
-
-```yaml
-clage_homeserver:
-  homeservers:
-    - name: Durchlauferhitzer Keller
-      ipAddress: 192.168.0.78
-      homeserverId: F8F005DB0CD7
-      heaterId: 2049DB0CD7
-  scan_interval: 15  # in seconds, Optional
-```
 
 ```yaml
 input_number:
@@ -82,8 +80,3 @@ input_number:
       value: '{{ states.sensor.clagehomeserver_durchlauferhitzer_keller_heater_status_setpoint.state }}'
     service: input_number.set_value
 ```
-
-
-
-<!-- # Sample View
-![screenshot of Home Assistant](doc/ha_entity_view.png) -->
