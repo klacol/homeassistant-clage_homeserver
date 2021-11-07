@@ -27,7 +27,14 @@ from homeassistant.components.sensor import (
     SensorEntity,
 )
 
-from .const import DOMAIN, CONF_HOMESERVERS, CONF_NAME
+from .const import (
+    DOMAIN,
+    CONF_HOMESERVERS,
+    CONF_NAME,
+    CONF_HOMESERVER_IP_ADDRESS,
+    CONF_HOMESERVER_ID,
+    CONF_HEATER_ID,
+)
 
 AMPERE = "A"
 VOLT = "V"
@@ -465,7 +472,9 @@ _sensors = [
 ]
 
 
-def _create_sensors_for_homeserver(homeserver_name, hass):
+def _create_sensors_for_homeserver(
+    homeserver_name, homeserver_ip_address, homeserver_id, heater_id, hass
+):
     _entities = []
     for _sensor in _sensors:
         _LOGGER.debug("Adding Sensor: %s for homeserver %s", _sensor, homeserver_name)
@@ -473,12 +482,15 @@ def _create_sensors_for_homeserver(homeserver_name, hass):
             ClageHomeserverSensor(
                 coordinator=hass.data[DOMAIN]["coordinator"],
                 entity_id=f"sensor.clagehomeserver_{homeserver_name}_{_sensor.system_name}",
-                homeserverName=homeserver_name,
+                homeserver_name=homeserver_name,
+                homeserver_ip_address=homeserver_ip_address,
+                homeserver_id=homeserver_id,
+                heater_id=heater_id,
                 name=_sensor.name,
                 attribute=_sensor.system_name,
                 unit=_sensor.unit,
-                stateClass=_sensor.state_class,
-                deviceClass=_sensor.device_class,
+                state_class=_sensor.state_class,
+                device_class=_sensor.device_class,
                 entity_category=_sensor.entity_category,
             )
         )
@@ -498,7 +510,15 @@ async def async_setup_entry(
     homeserver_name = _config[CONF_NAME]
 
     _LOGGER.debug("homeserver name: %s", homeserver_name)
-    async_add_entities(_create_sensors_for_homeserver(homeserver_name, hass))
+    async_add_entities(
+        _create_sensors_for_homeserver(
+            homeserver_name,
+            _config[CONF_HOMESERVER_IP_ADDRESS],
+            _config[CONF_HOMESERVER_ID],
+            _config[CONF_HEATER_ID],
+            hass,
+        )
+    )
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
@@ -513,7 +533,15 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     for homeserver in homeservers:
         homeserver_name = homeserver[0][CONF_NAME]
         _LOGGER.debug("homeserver name: %s", homeserver_name)
-        entities.extend(_create_sensors_for_homeserver(homeserver_name, hass))
+        entities.extend(
+            _create_sensors_for_homeserver(
+                homeserver_name,
+                homeserver[0][CONF_HOMESERVER_IP_ADDRESS],
+                homeserver[0][CONF_HOMESERVER_ID],
+                homeserver[0][CONF_HEATER_ID],
+                hass,
+            )
+        )
 
     async_add_entities(entities)
 
@@ -525,37 +553,41 @@ class ClageHomeserverSensor(CoordinatorEntity, SensorEntity):
         self,
         coordinator,
         entity_id,
-        homeserverName,
+        homeserver_name,
+        homeserver_ip_address,
+        homeserver_id,
+        heater_id,
         name,
         attribute,
         unit,
-        stateClass,
-        deviceClass,
+        state_class,
+        device_class,
         entity_category,
     ):
         """Initializes the CLAGE Homeserver sensors."""
 
         super().__init__(coordinator)
-        self.homeservername = homeserverName
+        self.homeservername = homeserver_name
+        self.homeserver_ip_address = homeserver_ip_address
+        self.homeserver_id = homeserver_id
+        self.heater_id = heater_id
         self.entity_id = entity_id
         self._name = name
         self._attribute = attribute
         self._unit = unit
-        self._attr_state_class = stateClass
-        self._attr_device_class = deviceClass
+        self._attr_state_class = state_class
+        self._attr_device_class = device_class
         if entity_category is not None:
             self._attr_entity_category = entity_category
 
     @property
     def device_info(self):
         return {
-            "identifiers": {
-                # Serial numbers are unique identifiers within a specific domain
-                (DOMAIN, self.homeservername)
-            },
+            "identifiers": {(DOMAIN, self.homeservername)},
             "name": self.homeservername,
-            "manufacturer": "Clage",
-            "model": "HOMESERVER",
+            "manufacturer": "CLAGE GmbH",
+            "model": f"DSX Touch {self.heater_id}@{self.homeserver_id}",
+            "configuration_url": f"https://{self.homeserver_ip_address}",
         }
 
     @property

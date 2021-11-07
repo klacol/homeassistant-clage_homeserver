@@ -9,6 +9,7 @@ from homeassistant.core import valid_entity_id
 from homeassistant import core
 from homeassistant.helpers.discovery import async_load_platform
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.helpers import device_registry as dr
 
 from .const import (
     DOMAIN,
@@ -67,7 +68,7 @@ CONFIG_SCHEMA = vol.Schema(
 async def async_setup_entry(hass, config):
     """Setup the integration in HOME ASSISTANT (Read and apply the configuration)"""
 
-    _LOGGER.info("async_Setup_entry for clage_homeserver component")
+    _LOGGER.info("Async_Setup_entry for clage_homeserver component")
     _LOGGER.debug(repr(config.data))
 
     name = config.data[CONF_NAME]
@@ -79,6 +80,17 @@ async def async_setup_entry(hass, config):
     hass.data[DOMAIN]["api"][name] = clage_homeserver
 
     await hass.data[DOMAIN]["coordinator"].async_refresh()
+
+    # device_registry = dr.async_get(hass)
+
+    # device_registry.async_get_or_create(
+    #     config_entry_id=config.entry_id,
+    #     identifiers=f"{name}.{config.data[CONF_HOMESERVER_ID]}.{config.data[CONF_HEATER_ID]}",
+    #     manufacturer="CLAGE GmbH",
+    #     name=name,
+    #     model="DSX Touch",
+    #     configuration_url=config.data[CONF_HOMESERVER_IP_ADDRESS],
+    # )
 
     hass.async_create_task(
         hass.config_entries.async_forward_entry_setup(config, "sensor")
