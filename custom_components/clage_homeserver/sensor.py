@@ -10,7 +10,7 @@ from homeassistant.const import (
     ENERGY_KILO_WATT_HOUR,
     ENTITY_CATEGORY_CONFIG,
     ENTITY_CATEGORY_DIAGNOSTIC,
-    ENTITY_CATEGORY_SYSTEM,
+    ENTITY_CATEGORY_DIAGNOSTIC,
     PERCENTAGE,
     TEMP_CELSIUS,
     TIME_SECONDS,
@@ -62,7 +62,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_SYSTEM,
+        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
     ),
     SensorDefinition(
         system_name="homeserver_time",
@@ -179,7 +179,7 @@ _sensors = [
         unit=TEMP_CELSIUS,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=DEVICE_CLASS_TEMPERATURE,
-        entity_category=ENTITY_CATEGORY_SYSTEM,
+        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
     ),
     SensorDefinition(
         system_name="heater_status_tP2",
@@ -188,7 +188,7 @@ _sensors = [
         unit=TEMP_CELSIUS,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=DEVICE_CLASS_TEMPERATURE,
-        entity_category=ENTITY_CATEGORY_SYSTEM,
+        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
     ),
     SensorDefinition(
         system_name="heater_status_tP3",
@@ -197,7 +197,7 @@ _sensors = [
         unit=TEMP_CELSIUS,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=DEVICE_CLASS_TEMPERATURE,
-        entity_category=ENTITY_CATEGORY_SYSTEM,
+        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
     ),
     SensorDefinition(
         system_name="heater_status_tP4",
@@ -206,7 +206,7 @@ _sensors = [
         unit=TEMP_CELSIUS,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=DEVICE_CLASS_TEMPERATURE,
-        entity_category=ENTITY_CATEGORY_SYSTEM,
+        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
     ),
     SensorDefinition(
         system_name="heater_status_flow",
@@ -233,7 +233,7 @@ _sensors = [
         unit=PERCENTAGE,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_SYSTEM,
+        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
     ),
     SensorDefinition(
         system_name="heater_status_valveFlags",
@@ -242,7 +242,7 @@ _sensors = [
         unit=None,
         state_class=None,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_SYSTEM,
+        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
     ),
     SensorDefinition(
         system_name="heater_status_power",
@@ -260,7 +260,7 @@ _sensors = [
         unit=POWER_KILO_WATT,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_SYSTEM,
+        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
     ),
     SensorDefinition(
         system_name="heater_status_power100",
@@ -269,7 +269,7 @@ _sensors = [
         unit=POWER_KILO_WATT,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_SYSTEM,
+        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
     ),
     SensorDefinition(
         system_name="heater_status_error",
@@ -323,7 +323,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_SYSTEM,
+        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
     ),
     SensorDefinition(
         system_name="heater_setup_scaldProtection",
@@ -350,7 +350,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_SYSTEM,
+        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
     ),
     SensorDefinition(
         system_name="heater_setup_powerCosts",
@@ -359,7 +359,7 @@ _sensors = [
         unit=CURRENCY_CENT,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_SYSTEM,
+        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
     ),
     SensorDefinition(
         system_name="heater_setup_powerMax",
@@ -368,7 +368,7 @@ _sensors = [
         unit=POWER_KILO_WATT,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_SYSTEM,
+        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
     ),
     SensorDefinition(
         system_name="heater_setup_calValue",
@@ -377,7 +377,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_SYSTEM,
+        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
     ),
     SensorDefinition(
         system_name="heater_setup_calValue",
@@ -386,7 +386,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_SYSTEM,
+        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
     ),
     SensorDefinition(
         system_name="heater_setup_timerPowerOn",
