@@ -395,7 +395,7 @@ _sensors = [
     ),
     SensorDefinition(
         system_name="heater_setup_timerLifetime",
-        name="Gesamtbetriebsdauer",
+        name="Gesamt-Betriebsdauer",
         definition="",
         unit=TIME_HOURS,
         state_class=STATE_CLASS_TOTAL_INCREASING,
@@ -442,7 +442,7 @@ _sensors = [
         system_name="usage_time",
         name="Gesamt-Nutzungsdauer",
         definition="Gesamte Nutzungsdauer aller Zapfungen seit Inbetriebnahme",
-        unit=TIME_SECONDS,
+        unit=TIME_MINUTES,
         state_class=STATE_CLASS_TOTAL_INCREASING,
         device_class=None,
         entity_category=None,
