@@ -238,7 +238,7 @@ _sensors = [
         unit=PERCENTAGE,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        entity_category=None,
     ),
     SensorDefinition(
         system_name="heater_status_valveFlags",
@@ -391,7 +391,7 @@ _sensors = [
         unit=TIME_MINUTES,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        entity_category=None,
     ),
     SensorDefinition(
         system_name="heater_setup_timerLifetime",
