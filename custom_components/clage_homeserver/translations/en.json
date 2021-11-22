@@ -1,22 +1,29 @@
 {
   "config": {
-    "title": "Add Clage Homeserver",
+    "title": "Add CLAGE Homeserver",
     "step": {
       "user": {
-        "title": "Clage Homeserver Setup",
-        "description": "If you need help with the configuration have a look here: https://github.com/klacol/homeassistant-clage_homeserver",
+        "title": "CLAGE Homeserver Setup",
+        "description": "If you need help with the configuration have a look here: https://github.com/klacol/homeassistant-clage_homeserver .",
         "data": {
-          "host": "Hostname or IP-Address of the Homeserver in the local network",
-          "homeserver_id": "unique id of the Homeserver",
-          "heater_id": "unique name of the heater, that is connected to the Homeserver"
+          "name": "The name of the Homeserver in Home Assistant.",
+          "ipAddress": "The IP-Address of the Homeserver in the local network (eg. 192.168.9.65).",
+          "homeserverId": "The ID of the home server. This can be retrieved in the CLAGE Smart-Control APP, under 'Settings/Devices/DSX Server/Server ID.",
+          "heaterId": "The ID of the instantaneous water heater that is connected to the Homeserver or in which the Homeserver is integrated. This can be retrieved in the CLAGE Smart-Control APP, under 'Settings/Devices/DSX Touch/Device ID."
         }
       }
     },
     "abort": {
       "cannot_connect": "Failed to connect",
       "missing_configuration": "The component is not configured. Please follow the documentation.",
-      "no_url_available": "No URL available. For information about this error, [check the help section]({docs_url})",
+      "no_url_available": "No URL available. For information about this error, [check the help section]({docs_url}).",
       "single_instance_allowed": "Already configured. Only a single configuration possible."
+    },
+    "error": {
+      "already_configured": "The device has already been configured.",
+      "could_not_connect": "Could not connect to the CLAGE API.",
+      "homeserver_not_active": "The Homeserver is not acive.",
+      "invalid_ip": "The IP Address is not valid."
     }
   }
 }
