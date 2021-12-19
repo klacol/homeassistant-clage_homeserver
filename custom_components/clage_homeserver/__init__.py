@@ -142,7 +142,7 @@ class HomeserverStateFetcher:
                 homeserver_id,
             )
             fetched_states.update(
-                await self._hass.async_add_executor_job(homeserver.GetConsumption)
+                await self._hass.async_add_executor_job(homeserver.GetConsumptionTotals)
             )
 
             data[homeserver_id] = fetched_states
