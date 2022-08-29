@@ -227,7 +227,7 @@ async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
 
             try:
                 homeservers = hass.data[DOMAIN]["api"]
-                homeserver = homeservers[homeserver_name]
+                homeserver = homeservers[homeserver_name_input]
                 await hass.async_add_executor_job(
                     homeserver.setTemperature,
                     temperature,
