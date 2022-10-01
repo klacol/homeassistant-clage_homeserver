@@ -29,10 +29,7 @@ from homeassistant.const import (
     DEVICE_CLASS_TIMESTAMP,
 )
 
-from homeassistant.const import (
-    ENTITY_CATEGORY_CONFIG,
-    ENTITY_CATEGORY_DIAGNOSTIC,
-)
+from homeassistant.helpers.entity import EntityCategory
 
 from .const import (
     DOMAIN,
@@ -58,7 +55,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        entity_category=EntityCategory.DIAGNOSTICT,
     ),
     SensorDefinition(
         system_name="homeserver_error",
@@ -67,7 +64,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        entity_category=EntityCategory.DIAGNOSTICT,
     ),
     SensorDefinition(
         system_name="homeserver_time",
@@ -76,7 +73,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=DEVICE_CLASS_TIMESTAMP,
-        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        entity_category=EntityCategory.DIAGNOSTICT,
     ),
     SensorDefinition(
         system_name="homeserver_success",
@@ -85,7 +82,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        entity_category=EntityCategory.DIAGNOSTICT,
     ),
     SensorDefinition(
         system_name="heater_id",
@@ -94,7 +91,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_CONFIG,
+        entity_category=EntityCategory.CONFIG,
     ),
     SensorDefinition(
         system_name="heater_busId",
@@ -103,7 +100,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_CONFIG,
+        entity_category=EntityCategory.CONFIG,
     ),
     SensorDefinition(
         system_name="heater_name",
@@ -112,7 +109,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_CONFIG,
+        entity_category=EntityCategory.CONFIG,
     ),
     SensorDefinition(
         system_name="heater_connected",
@@ -121,7 +118,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_CONFIG,
+        entity_category=EntityCategory.CONFIG,
     ),
     SensorDefinition(
         system_name="heater_signal",
@@ -130,7 +127,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=DEVICE_CLASS_SIGNAL_STRENGTH,
-        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        entity_category=EntityCategory.DIAGNOSTICT,
     ),
     SensorDefinition(
         system_name="heater_rssi",
@@ -139,7 +136,7 @@ _sensors = [
         unit=SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=DEVICE_CLASS_SIGNAL_STRENGTH,
-        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        entity_category=EntityCategory.DIAGNOSTICT,
     ),
     SensorDefinition(
         system_name="heater_lqi",
@@ -148,7 +145,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        entity_category=EntityCategory.DIAGNOSTICT,
     ),
     SensorDefinition(
         system_name="heater_status_setpoint",
@@ -184,7 +181,7 @@ _sensors = [
         unit=TEMP_CELSIUS,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=DEVICE_CLASS_TEMPERATURE,
-        entity_category=ENTITY_CATEGORY_CONFIG,
+        entity_category=EntityCategory.CONFIG,
     ),
     SensorDefinition(
         system_name="heater_status_tP2",
@@ -193,7 +190,7 @@ _sensors = [
         unit=TEMP_CELSIUS,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=DEVICE_CLASS_TEMPERATURE,
-        entity_category=ENTITY_CATEGORY_CONFIG,
+        entity_category=EntityCategory.CONFIG,
     ),
     SensorDefinition(
         system_name="heater_status_tP3",
@@ -202,7 +199,7 @@ _sensors = [
         unit=TEMP_CELSIUS,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=DEVICE_CLASS_TEMPERATURE,
-        entity_category=ENTITY_CATEGORY_CONFIG,
+        entity_category=EntityCategory.CONFIG,
     ),
     SensorDefinition(
         system_name="heater_status_tP4",
@@ -211,7 +208,7 @@ _sensors = [
         unit=TEMP_CELSIUS,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=DEVICE_CLASS_TEMPERATURE,
-        entity_category=ENTITY_CATEGORY_CONFIG,
+        entity_category=EntityCategory.CONFIG,
     ),
     SensorDefinition(
         system_name="heater_status_flow",
@@ -229,7 +226,7 @@ _sensors = [
         unit=VOLUME_FLOW_RATE_CUBIC_METERS_PER_HOUR,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_CONFIG,
+        entity_category=EntityCategory.CONFIG,
     ),
     SensorDefinition(
         system_name="heater_status_valvePos",
@@ -247,7 +244,7 @@ _sensors = [
         unit=None,
         state_class=None,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        entity_category=EntityCategory.DIAGNOSTICT,
     ),
     SensorDefinition(
         system_name="heater_status_power",
@@ -265,7 +262,7 @@ _sensors = [
         unit=POWER_KILO_WATT,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_CONFIG,
+        entity_category=EntityCategory.CONFIG,
     ),
     SensorDefinition(
         system_name="heater_status_power100",
@@ -274,7 +271,7 @@ _sensors = [
         unit=POWER_KILO_WATT,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_CONFIG,
+        entity_category=EntityCategory.CONFIG,
     ),
     SensorDefinition(
         system_name="heater_status_error",
@@ -283,7 +280,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        entity_category=EntityCategory.DIAGNOSTICT,
     ),
     SensorDefinition(
         system_name="heater_setup_swVersion",
@@ -292,7 +289,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        entity_category=EntityCategory.DIAGNOSTICT,
     ),
     SensorDefinition(
         system_name="heater_setup_serialDevice",
@@ -301,7 +298,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        entity_category=EntityCategory.DIAGNOSTICT,
     ),
     SensorDefinition(
         system_name="heater_setup_serialPowerUnit",
@@ -310,7 +307,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        entity_category=EntityCategory.DIAGNOSTICT,
     ),
     SensorDefinition(
         system_name="heater_setup_flowMax",
@@ -319,7 +316,7 @@ _sensors = [
         unit=VOLUME_FLOW_RATE_CUBIC_METERS_PER_HOUR,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_CONFIG,
+        entity_category=EntityCategory.CONFIG,
     ),
     SensorDefinition(
         system_name="heater_setup_loadShedding",
@@ -328,7 +325,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_CONFIG,
+        entity_category=EntityCategory.CONFIG,
     ),
     SensorDefinition(
         system_name="heater_setup_scaldProtection",
@@ -337,7 +334,7 @@ _sensors = [
         unit=TEMP_CELSIUS,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=DEVICE_CLASS_TEMPERATURE,
-        entity_category=ENTITY_CATEGORY_CONFIG,
+        entity_category=EntityCategory.CONFIG,
     ),
     SensorDefinition(
         system_name="heater_setup_sound",
@@ -346,7 +343,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_CONFIG,
+        entity_category=EntityCategory.CONFIG,
     ),
     SensorDefinition(
         system_name="heater_setup_fcpAddr",
@@ -355,7 +352,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_CONFIG,
+        entity_category=EntityCategory.CONFIG,
     ),
     SensorDefinition(
         system_name="heater_setup_powerCosts",
@@ -364,7 +361,7 @@ _sensors = [
         unit=CURRENCY_CENT,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_CONFIG,
+        entity_category=EntityCategory.CONFIG,
     ),
     SensorDefinition(
         system_name="heater_setup_powerMax",
@@ -373,7 +370,7 @@ _sensors = [
         unit=POWER_KILO_WATT,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_CONFIG,
+        entity_category=EntityCategory.CONFIG,
     ),
     SensorDefinition(
         system_name="heater_setup_calValue",
@@ -382,7 +379,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+        entity_category=EntityCategory.DIAGNOSTICT,
     ),
     SensorDefinition(
         system_name="heater_setup_timerPowerOn",
