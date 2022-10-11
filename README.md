@@ -1,4 +1,4 @@
-# Home Assistant integration for the water heater CLAGE DSX Touch connected through an Clage Homeserver
+# Home Assistant integration for the water heater CLAGE DSX Touch connected through a Clage Homeserver
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 [![Validate with hassfest](https://github.com/klacol/homeassistant-clage_homeserver/actions/workflows/hassfest.yaml/badge.svg)](https://github.com/klacol/homeassistant-clage_homeserver/actions/workflows/hassfest.yaml)
