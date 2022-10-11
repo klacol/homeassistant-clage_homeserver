@@ -298,7 +298,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=EntityCategory.DIAGNOSTICT,
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
     SensorDefinition(
         system_name="heater_setup_serialPowerUnit",
@@ -307,7 +307,7 @@ _sensors = [
         unit=None,
         state_class=STATE_CLASS_MEASUREMENT,
         device_class=None,
-        entity_category=EntityCategory.DIAGNOSTICT,
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
     SensorDefinition(
         system_name="heater_setup_flowMax",
