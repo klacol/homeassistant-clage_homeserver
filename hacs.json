@@ -2,7 +2,6 @@
   "name": "Water heater CLAGE DSX Touch",
   "content_in_root": false,
   "render_readme": true,
-  "domains": ["sensor"],
   "country": ["DE"],
   "homeassistant": "2021.11.0"
 }
