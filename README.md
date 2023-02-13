@@ -20,6 +20,7 @@ It uses the Python module [clage_homeserver](https://pypi.org/project/clage-home
 # Installation
 
 ## Option 1: Install it through HACS (recommended)
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=klacol&repository=homeassistant-clage_homeserver&category=integration)
 
 ## Option 2: Install it manually
 
