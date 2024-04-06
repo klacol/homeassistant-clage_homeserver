@@ -3,12 +3,15 @@ set_temperature:
   description: Sets the temperature of the warm water, that is leaving the heater, e.g. to the showers
   fields:
     homeserver_name:
+      name: "Homeserver name"
       description: name of the homeserver
       example: "durchlauferhitzer_keller"
     heater_id:
+      name: "Heater ID"
       description: id of the heater to update
       example: "2049DB0CD7"
     temperature:
+      name: "Temperature"
       description: temperature to be set in °C (10-60)
       example: "45"
 

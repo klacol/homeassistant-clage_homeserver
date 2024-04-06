@@ -33,14 +33,17 @@
         "description": "Sets the temperature of the hot water leaving the heater, e.g. to the showers",
         "fields": {
           "homeserver_name": {
+            "name": "Homeserver name",
             "description": "Name of the Homeservers",
             "example": "heater_1"
           },
           "heater_id": {
+            "name": "Heater ID",
             "description": "ID of the heater",
             "example": "2049DB0CD7"
           },
           "temperature": {
+            "name": "Temperature",
             "description": "Temperature to be set in °C (10-60)",
             "example": "45"
           }

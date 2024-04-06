@@ -33,14 +33,17 @@
         "description": "Setzt die Temperatur des Warmwassers, das den Durchlauferhitzer verlässt, z.B. zu den Duschen",
         "fields": {
           "homeserver_name": {
+            "name": "Homeserver Name",
             "description": "Name des Homeservers",
             "example": "durchlauferhitzer_keller"
           },
           "heater_id": {
+            "name": "Heater ID",
             "description": "ID des zu aktualisierenden Servers",
             "example": "2049DB0CD7"
           },
           "temperature": {
+            "name": "Temperatur",
             "description": "Zu setzende Temperatur in °C (10-60)",
             "example": "45"
           }
