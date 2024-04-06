@@ -1,6 +1,6 @@
 {
+  "title": "CLAGE Homeserver hinzufügen",
   "config": {
-    "title": "CLAGE Homeserver hinzufügen",
     "step": {
       "user": {
         "title": "CLAGE Homeserver Setup",

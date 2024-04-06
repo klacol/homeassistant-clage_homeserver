@@ -1,6 +1,6 @@
 {
+  "title": "Add CLAGE Homeserver",
   "config": {
-    "title": "Add CLAGE Homeserver",
     "step": {
       "user": {
         "title": "CLAGE Homeserver Setup",
@@ -24,31 +24,6 @@
       "could_not_connect": "Could not connect to the CLAGE API.",
       "homeserver_not_active": "The Homeserver is not active.",
       "invalid_ip": "The IP Address is not valid."
-    }
-  },
-  "component": {
-    "clage_homeserver": {
-      "set_temperature": {
-        "name": "Set temperature",
-        "description": "Sets the temperature of the hot water leaving the heater, e.g. to the showers",
-        "fields": {
-          "homeserver_name": {
-            "name": "Homeserver name",
-            "description": "Name of the Homeservers",
-            "example": "heater_1"
-          },
-          "heater_id": {
-            "name": "Heater ID",
-            "description": "ID of the heater",
-            "example": "2049DB0CD7"
-          },
-          "temperature": {
-            "name": "Temperature",
-            "description": "Temperature to be set in °C (10-60)",
-            "example": "45"
-          }
-        }
-      }
     }
   }
 }
