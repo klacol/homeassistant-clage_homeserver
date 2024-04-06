@@ -30,7 +30,7 @@
     "clage_homeserver": {
       "set_temperature": {
         "name": "Setze Temperatur",
-        "description": "Setzt die Temperatur des Warmwassers, das den Heizkörper verlässt, z.B. zu den Duschen",
+        "description": "Setzt die Temperatur des Warmwassers, das den Durchlauferhitzer verlässt, z.B. zu den Duschen",
         "fields": {
           "homeserver_name": {
             "description": "Name des Homeservers",
