@@ -7,7 +7,7 @@
         "description": "Wenn Du Hilfe bei der Konfiguration brauchst, dann siehe hier nach: https://github.com/klacol/homeassistant-clage_homeserver .",
         "data": {
           "name": "Der Name des Homeservers",
-          "ipAddress": "Die IP-Addresse des Homeservers im lokalen Netzwerk (z.B. 192.168.9.65).",
+          "ipAddress": "Die IP-Adresse des Homeservers im lokalen Netzwerk (z.B. 192.168.9.65).",
           "homeserverId": "Die ID des Homeservers. Diese kann in der CLAGE Smart-Control APP abgerufen werden, unter 'Einstellung/Geräte/DSX Server/Server-ID.",
           "heaterId": "Die ID des Durchlauferhitzers, der an den Homeserver angeschlossen oder in dem der Homeserver integriert ist. Diese kann in der CLAGE Smart-Control APP abgerufen werden, unter 'Einstellung/Geräte/DSX Touch/Gerätekennung."
         }
@@ -24,6 +24,28 @@
       "could_not_connect": "Es konnte keine Verbindung zur CLAGE-API hergestellt werden.",
       "homeserver_not_active": "Der Homeserver ist nicht aktiv.",
       "invalid_ip": "Die IP Adresse ist ungültig."
+    }
+  },
+  "component": {
+    "clage_homeserver": {
+      "set_temperature": {
+        "name": "Setze Temperatur",
+        "description": "Setzt die Temperatur des Warmwassers, das den Heizkörper verlässt, z.B. zu den Duschen",
+        "fields": {
+          "homeserver_name": {
+            "description": "Name des Homeservers",
+            "example": "durchlauferhitzer_keller"
+          },
+          "heater_id": {
+            "description": "ID des zu aktualisierenden Servers",
+            "example": "2049DB0CD7"
+          },
+          "temperature": {
+            "description": "Zu setzende Temperatur in °C (10-60)",
+            "example": "45"
+          }
+        }
+      }
     }
   }
 }

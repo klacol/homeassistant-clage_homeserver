@@ -1,4 +1,5 @@
 set_temperature:
+  name: "Set Temperature of Clage Heater"
   description: Sets the temperature of the warm water, that is leaving the heater, e.g. to the showers
   fields:
     homeserver_name:
