@@ -324,7 +324,7 @@ _sensors = [
     SensorDefinition(
         system_name="heater_setup_scaldProtection",
         name="Verbrühschutztemperatur",
-        definition="utztemperatur; 0=aus; entspr. tLimit",
+        definition="Schutztemperatur; 0=aus; entspr. tLimit",
         unit=UnitOfTemperature.CELSIUS,
         state_class=SensorStateClass.MEASUREMENT,
         device_class=SensorDeviceClass.TEMPERATURE,
@@ -388,7 +388,7 @@ _sensors = [
         system_name="heater_setup_timerLifetime",
         name="Gesamt-Betriebsdauer",
         definition="",
-        unit=UnitOfTime.HOURS,
+        unit=UnitOfTime.SECONDS,
         state_class=SensorStateClass.TOTAL_INCREASING,
         device_class=None,
         entity_category=None,
