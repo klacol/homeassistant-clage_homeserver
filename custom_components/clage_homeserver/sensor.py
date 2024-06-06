@@ -210,7 +210,7 @@ _sensors = [
         definition="",
         unit=UnitOfVolumeFlowRate.CUBIC_METERS_PER_HOUR,
         state_class=SensorStateClass.MEASUREMENT,
-        device_class=None,
+        device_class=SensorDeviceClass.WATER,
         entity_category=None,
     ),
     SensorDefinition(
@@ -219,7 +219,7 @@ _sensors = [
         definition="",
         unit=UnitOfVolumeFlowRate.CUBIC_METERS_PER_HOUR,
         state_class=SensorStateClass.MEASUREMENT,
-        device_class=None,
+        device_class=SensorDeviceClass.WATER,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     SensorDefinition(
@@ -309,7 +309,7 @@ _sensors = [
         definition="Durchflussmengenbegrenzung 0/255=aus, 253=ECO,254=AUTO",
         unit=UnitOfVolumeFlowRate.CUBIC_METERS_PER_HOUR,
         state_class=SensorStateClass.MEASUREMENT,
-        device_class=None,
+        device_class=SensorDeviceClass.WATER,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     SensorDefinition(
@@ -453,7 +453,7 @@ _sensors = [
         definition="Gesamter Wasserverbrauch aller Zapfungen seit Inbetriebnahme",
         unit=UnitOfVolume.LITERS,
         state_class=SensorStateClass.TOTAL_INCREASING,
-        device_class=None,
+        device_class=SensorDeviceClass.WATER,
         entity_category=None,
     ),
 ]
