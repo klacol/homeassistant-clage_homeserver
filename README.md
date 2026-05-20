@@ -59,7 +59,7 @@ Go to **Settings → Devices & Services → CLAGE Homeserver → Configure** to 
 3. Fill in:
    - **homeserver_name**: The name you gave during setup (slugified, e.g. `dsx_server_keller`)
    - **heater_id**: Your heater device ID (e.g. `2016FFEE22`)
-   - **temperature**: Target temperature in °C (10-60)
+   - **temperature**: Target temperature in °C (20-60)
 
 ## Via Automation
 
@@ -85,7 +85,7 @@ Add this to your `configuration.yaml`:
 input_number:
   clage_homeserver_temperature:
     name: Soll-Temperatur
-    min: 10
+    min: 20
     max: 60
     initial: 45
     step: 1
