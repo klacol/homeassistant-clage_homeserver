@@ -114,6 +114,18 @@ async def async_unload_entry(hass, entry):
         hass.data[DOMAIN]["api"].pop(entry.data[CONF_NAME])
     return unload_ok
 
+async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
+    """Migrate old config entry."""
+    data = dict(config_entry.data)
+    version = config_entry.version
+
+    if version == 1:
+        data["CONF_PASSWORD"] = "smart"
+        version = 2
+
+    hass.config_entries.async_update_entry(config_entry, data=data, version=version)
+    
+    return True
 
 class HomeserverStateFetcher:
     """Class to manage the states of the homeserver and heater"""
