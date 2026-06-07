@@ -390,7 +390,7 @@ _sensors = [
         definition="",
         unit=UnitOfTime.HOURS,
         state_class=SensorStateClass.TOTAL_INCREASING,
-        device_class=None,
+        device_class=SensorDeviceClass.DURATION,
         entity_category=None,
     ),
     SensorDefinition(
@@ -399,7 +399,7 @@ _sensors = [
         definition="",
         unit=UnitOfTime.HOURS,
         state_class=SensorStateClass.TOTAL_INCREASING,
-        device_class=None,
+        device_class=SensorDeviceClass.DURATION,
         entity_category=None,
     ),
     # SensorDefinition(
