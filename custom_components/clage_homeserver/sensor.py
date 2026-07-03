@@ -587,7 +587,7 @@ class ClageHomeserverSensor(CoordinatorEntity, SensorEntity):
     @property
     def state(self):
         """Return the state of the sensor."""
-        return self.coordinator.data[self.homeservername][self._attribute]
+        return self.coordinator.data.get(self.homeservername, {}).get(self._attribute)
 
     @property
     def unit_of_measurement(self):
